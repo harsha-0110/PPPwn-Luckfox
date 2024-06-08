@@ -1,31 +1,42 @@
 #!/bin/bash
 
-# Define variables
-REPO_DIR=$(pwd)
-INSTALL_DIR="/opt/PPPwn-Luckfox"
-WEB_DIR="/var/www/pppwn"
-NGINX_CONF="/etc/nginx/sites-available/pppwn"
-NGINX_CONF_LINK="/etc/nginx/sites-enabled/pppwn"
-SERVICE_FILE="/etc/systemd/system/pppwn.service"
+# Get the current directory
+INSTALL_DIR=$(pwd)
 
-# Update and install dependencies
-sudo apt-get update
-sudo apt-get install -y nginx pppoe pppoeconf git
+# Variables
+SERVICE_NAME="pppwn"
+SERVICE_FILE="/etc/systemd/system/$SERVICE_NAME.service"
+NGINX_CONFIG_FILE="/etc/nginx/sites-available/pppwn"
+NGINX_ENABLED_CONFIG="/etc/nginx/sites-enabled/pppwn"
 
-# Copy the repository to /opt
-sudo rm -rf $INSTALL_DIR
-sudo cp -r $REPO_DIR $INSTALL_DIR
+# Ensure required directories and files exist
+if [ ! -d "$INSTALL_DIR/pppoe" ] || [ ! -d "$INSTALL_DIR/web" ] || [ ! -f "$INSTALL_DIR/service/pppwn.service" ]; then
+    echo "Required directories or files are missing. Make sure you have pppoe, web directories and pppwn.service file."
+    exit 1
+fi
 
-# Set up the web directory
-sudo mkdir -p $WEB_DIR
-sudo cp $INSTALL_DIR/web/* $WEB_DIR/
-sudo chown -R www-data:www-data $WEB_DIR
+# Install PPPoE configuration files
+echo "Installing PPPoE configuration files..."
+sudo cp "$INSTALL_DIR/pppoe/pppoe.conf" /etc/ppp/pppoe.conf
+sudo cp "$INSTALL_DIR/pppoe/pppoe-server-options" /etc/ppp/pppoe-server-options
+sudo cp "$INSTALL_DIR/pppoe/pap-secrets" /etc/ppp/pap-secrets
 
-# Set up Nginx configuration
-sudo tee $NGINX_CONF > /dev/null <<EOL
+# Install systemd service
+echo "Installing systemd service..."
+sudo cp "$INSTALL_DIR/service/pppwn.service" $SERVICE_FILE
+
+# Reload systemd to recognize the new service
+sudo systemctl daemon-reload
+
+# Enable the pppwn service to start on boot
+sudo systemctl enable $SERVICE_NAME.service
+
+# Set up nginx configuration
+echo "Setting up nginx configuration..."
+sudo bash -c "cat > $NGINX_CONFIG_FILE <<EOL
 server {
-    listen 80;
-    server_name localhost;
+    listen 0.0.0.0:80;
+    server_name _;
 
     root $WEB_DIR;
     index config.html;
@@ -38,34 +49,17 @@ server {
         return 301 /payloads.html;
     }
 }
-EOL
+EOL"
 
-# Enable Nginx site configuration
-sudo ln -sf $NGINX_CONF $NGINX_CONF_LINK
+# Enable nginx site configuration
+sudo ln -sf $NGINX_CONFIG_FILE $NGINX_ENABLED_CONFIG
 
-# Test and restart Nginx
-sudo nginx -t && sudo systemctl restart nginx
+# Reload nginx to apply the new configuration
+sudo systemctl reload nginx
 
-# Set up systemd service for pppwn
-sudo cp $INSTALL_DIR/service/pppwn.service $SERVICE_FILE
-sudo systemctl enable pppwn.service
-sudo systemctl start pppwn.service
+# Start or restart the services
+echo "Starting services..."
+sudo systemctl restart $SERVICE_NAME.service
+sudo systemctl restart nginx
 
-# Set up pppoe configuration
-sudo cp $INSTALL_DIR/pppoe/pppoe.conf /etc/ppp/peers/
-sudo cp $INSTALL_DIR/pppoe/pppoe-server-options /etc/ppp/
-sudo cp $INSTALL_DIR/pppoe/pap-secrets /etc/ppp/
-
-# Create and set up run.sh
-sudo cp $INSTALL_DIR/run.sh /usr/local/bin/run.sh
-sudo chmod +x /usr/local/bin/run.sh
-
-# Run run.sh on startup
-sudo tee /etc/rc.local > /dev/null <<EOL
-#!/bin/sh -e
-/usr/local/bin/run.sh
-exit 0
-EOL
-sudo chmod +x /etc/rc.local
-
-echo "Installation complete. Please ensure all configurations are correct."
+echo "Installation complete."
