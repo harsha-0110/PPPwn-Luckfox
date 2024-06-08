@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Variables
-INSTALL_DIR="/opt/PPPwn-Luckfox"
+INSTALL_DIR="./"
 SERVICE_NAME="pppwn"
 NGINX_SERVICE="nginx"
 
