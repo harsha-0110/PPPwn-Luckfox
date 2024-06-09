@@ -1,23 +1,13 @@
-# PPPoE server options
-
-# Name of the PPPoE service
-service-name "pppoe"
-
-# Interface to listen on
-interface eth0
-
-# Local IP address
-local-ip 192.168.1.1
-
-# IP address pool
-remote-ip 192.168.1.10-192.168.1.20
-
-# Enable proxy ARP
-proxyarp
-
-# DNS servers
+# PPP options for the PPPoE Server
+# LOC: GPL
+#require-pap
+require-chap
+login
+lcp-echo-interval 10
+lcp-echo-failure 2
 ms-dns 8.8.8.8
 ms-dns 8.8.4.4
-
-# Use PAP for authentication
-require-pap
+netmask 255.255.255.0
+defaultroute
+noipdefault
+usepeerdns

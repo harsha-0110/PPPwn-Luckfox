@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # Variables
-INSTALL_DIR="./"
 SERVICE_NAME="pppwn"
 NGINX_SERVICE="nginx"
 
@@ -12,12 +11,11 @@ sudo systemctl stop $NGINX_SERVICE
 
 # Pull the latest changes
 echo "Updating repository..."
-cd $INSTALL_DIR
 git pull origin main
 
 # Run install.sh to reapply configurations
 echo "Running install.sh..."
-sudo bash $INSTALL_DIR/install.sh
+sudo bash ./install.sh
 
 # Restart the services
 echo "Restarting services..."
