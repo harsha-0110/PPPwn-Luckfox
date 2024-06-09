@@ -4,7 +4,7 @@
 CURRENT_DIR=$(pwd)
 WEB_DIR="/var/www/pppwn"
 NGINX_CONF="/etc/nginx/sites-available/default"
-SERVICE_FILE="/etc/systemd/system/pppwn.service"
+PPPWN_SERVICE="/etc/systemd/system"
 CONFIG_DIR="/etc/pppwn"
 CONFIG_FILE="$CONFIG_DIR/config.json"
 
@@ -31,14 +31,7 @@ sudo mkdir -p $WEB_DIR
 sudo cp $CURRENT_DIR/web/* $WEB_DIR/
 
 # Detect the PHP-FPM version
-PHP_VERSION=$(php -r "echo PHP_MAJOR_VERSION.'.'.PHP_MINOR_VERSION;")
 PHP_FPM_SOCK="/var/run/php/php${PHP_VERSION}-fpm.sock"
-
-# Check if the PHP-FPM socket file exists
-if [ ! -e "$PHP_FPM_SOCK" ]; then
-    echo "Error: PHP-FPM socket file not found for PHP version $PHP_VERSION"
-    exit 1
-fi
 
 # Set up Nginx configuration
 sudo tee $NGINX_CONF > /dev/null <<EOL
@@ -76,7 +69,19 @@ sudo ln -sf $NGINX_CONF /etc/nginx/sites-enabled/default
 sudo nginx -t && sudo systemctl reload nginx
 
 # Set up systemd service for pppwn
-sudo cp $CURRENT_DIR/service/pppwn.service $SERVICE_FILE
+sudo tee $PPPWN_SERVICE > /dev/null <<EOL
+[Unit]
+Description=PPPwn Service
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=$CURRENT_DIR/run.sh
+
+[Install]
+WantedBy=multi-user.target
+EOL
+
 sudo systemctl enable pppwn.service
 sudo systemctl start pppwn.service
 
@@ -85,21 +90,6 @@ sudo cp $CURRENT_DIR/pppoe/pppoe.conf /etc/ppp/peers/
 sudo cp $CURRENT_DIR/pppoe/pppoe-server-options /etc/ppp/
 sudo cp $CURRENT_DIR/pppoe/pap-secrets /etc/ppp/
 sudo cp $CURRENT_DIR/pppoe/ipaddress_pool /etc/ppp/
-
-# Set up config file
-sudo cp $CURRENT_DIR/config.json /etc/
-
-# Create and set up run.sh
-sudo cp $CURRENT_DIR/run.sh /usr/local/bin/run.sh
-sudo chmod +x /usr/local/bin/run.sh
-
-# Run run.sh on startup
-sudo tee /etc/rc.local > /dev/null <<EOL
-#!/bin/sh -e
-/usr/local/bin/run.sh
-exit 0
-EOL
-sudo chmod +x /etc/rc.local
 
 # Start the PPPoE server with the correct network interface
 sudo pppoe-server -I eth0 -C pppoe -L 192.168.1.1 -R 192.168.1.10 -N 4
