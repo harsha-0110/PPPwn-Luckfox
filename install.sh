@@ -4,7 +4,7 @@
 CURRENT_DIR=$(pwd)
 WEB_DIR="/var/www/pppwn"
 NGINX_CONF="/etc/nginx/sites-available/default"
-PPPWN_SERVICE="/etc/systemd/system"
+PPPWN_SERVICE="/etc/systemd/system/pppwn.service"
 CONFIG_DIR="/etc/pppwn"
 CONFIG_FILE="$CONFIG_DIR/config.json"
 
@@ -31,6 +31,7 @@ sudo mkdir -p $WEB_DIR
 sudo cp $CURRENT_DIR/web/* $WEB_DIR/
 
 # Detect the PHP-FPM version
+PHP_VERSION=$(php -r "echo PHP_MAJOR_VERSION.'.'.PHP_MINOR_VERSION;")
 PHP_FPM_SOCK="/var/run/php/php${PHP_VERSION}-fpm.sock"
 
 # Set up Nginx configuration
@@ -65,7 +66,8 @@ EOL
 # Enable Nginx site configuration
 sudo ln -sf $NGINX_CONF /etc/nginx/sites-enabled/default
 
-# Test and restart Nginx
+# Start and test Nginx
+sudo systemctl start nginx
 sudo nginx -t && sudo systemctl reload nginx
 
 # Set up systemd service for pppwn
