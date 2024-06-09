@@ -94,6 +94,6 @@ sudo cp $CURRENT_DIR/pppoe/pap-secrets /etc/ppp/
 sudo cp $CURRENT_DIR/pppoe/ipaddress_pool /etc/ppp/
 
 # Start the PPPoE server with the correct network interface
-sudo pppoe-server -I eth0 -C pppoe -L 192.168.1.1 -R 192.168.1.10 -N 4
+sudo bash ./pppoe.sh
 
 echo "Installation complete. Please ensure all configurations are correct."
