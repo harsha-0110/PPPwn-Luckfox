@@ -9,11 +9,11 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 20px;
-            background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
+            background-color: black;
         }
         .container {
             max-width: 600px;
@@ -71,23 +71,57 @@
 
     <?php
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['run_pppwn'])) {
-        // Read config.json to get the installation directory
+        // Read config.json to get the installation directory and other configuration values
         $config_file = '/etc/pppwn/config.json';
         if (file_exists($config_file)) {
             $config_data = json_decode(file_get_contents($config_file), true);
             if (isset($config_data['install_dir'])) {
-                // Execute the run.sh script from the installation directory
                 $installation_dir = $config_data['install_dir'];
-                $output = shell_exec("$installation_dir/run.sh 2>&1");
-                echo "<div class='output'><h2>Script Output:</h2><pre>$output</pre></div>";
+
+                // Define the paths to the stage1 and stage2 payloads based on FW_VERSION
+                $fw_version = $config_data['FW_VERSION'];
+                $stage1_payload = "$installation_dir/stage1/stage1_${fw_version}.bin";
+                $stage2_payload = "$installation_dir/stage2/stage2_${fw_version}.bin";
+
+                // Build the base pppwn command
+                $cmd = "sudo $installation_dir/pppwn --interface eth0 --fw $fw_version --stage1 $stage1_payload --stage2 $stage2_payload";
+
+                // Append optional parameters if they are not null or false
+                if ($config_data['TIMEOUT'] !== null) {
+                    $cmd .= " --timeout " . $config_data['TIMEOUT'];
+                }
+                if ($config_data['WAIT_AFTER_PIN'] !== null) {
+                    $cmd .= " --wait-after-pin " . $config_data['WAIT_AFTER_PIN'];
+                }
+                if ($config_data['GROOM_DELAY'] !== null) {
+                    $cmd .= " --groom-delay " . $config_data['GROOM_DELAY'];
+                }
+                if ($config_data['BUFFER_SIZE'] !== null) {
+                    $cmd .= " --buffer-size " . $config_data['BUFFER_SIZE'];
+                }
+                if ($config_data['AUTO_RETRY'] === true) {
+                    $cmd .= " --auto-retry";
+                }
+                if ($config_data['NO_WAIT_PADI'] === true) {
+                    $cmd .= " --no-wait-padi";
+                }
+                if ($config_data['REAL_SLEEP'] === true) {
+                    $cmd .= " --real-sleep";
+                }
+
+                // Execute the command
+                shell_exec($cmd);
             } else {
-                echo "<div class='output'><h2>Error:</h2><p>Installation directory not found or invalid: </p></div>";
+                echo "<div class='output'><h2>Error:</h2><p>Installation directory not found or invalid.</p></div>";
             }
         } else {
             echo "<div class='output'><h2>Error:</h2><p>Configuration file not found.</p></div>";
         }
     }
     ?>
+
+
+
 </div>
 
 </body>

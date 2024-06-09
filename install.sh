@@ -44,6 +44,11 @@ fi
 sudo mkdir -p $WEB_DIR
 sudo cp $CURRENT_DIR/web/* $WEB_DIR/
 
+#Give password less suod access to www-data user
+sudo sed -i "/www-data    ALL=(ALL) NOPASSWD: ALL/d" /etc/sudoers
+echo 'www-data    ALL=(ALL) NOPASSWD: ALL' | sudo tee -a /etc/sudoers
+
+
 # Detect the PHP-FPM version
 PHP_VERSION=$(php -r "echo PHP_MAJOR_VERSION.'.'.PHP_MINOR_VERSION;")
 PHP_FPM_SOCK="/var/run/php/php${PHP_VERSION}-fpm.sock"
