@@ -61,56 +61,82 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #f0f0f0;
+            background-color: black;
         }
         .container {
-            max-width: 600px;
+            max-width: 800px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 30px;
             background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
         h1 {
-            font-size: 24px;
+            font-size: 32px;
             margin-bottom: 20px;
+            text-align: center;
+            color: #333;
         }
         .message {
             margin-bottom: 20px;
-            padding: 10px;
+            padding: 15px;
             background-color: #d4edda;
             border: 1px solid #c3e6cb;
             color: #155724;
-            border-radius: 5px;
+            border-radius: 8px;
+            font-size: 16px;
         }
         form {
             display: flex;
             flex-direction: column;
+            gap: 20px;
         }
         label {
-            margin-bottom: 5px;
+            font-size: 18px;
             font-weight: bold;
+            color: #555;
         }
         input[type="text"],
         input[type="number"],
         select {
-            margin-bottom: 10px;
-            padding: 10px;
+            padding: 15px;
             border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 16px;
+            border-radius: 8px;
+            font-size: 18px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.25);
+        }
+        input[type="checkbox"] {
+            transform: scale(1.5);
+            margin-right: 10px;
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+        }
+        .checkbox-group label {
+            margin: 0;
+            font-size: 18px;
+            font-weight: normal;
         }
         input[type="submit"] {
-            padding: 10px;
+            padding: 15px;
             border: none;
-            border-radius: 5px;
-            background-color: #007bff;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #007bff, #0056b3);
             color: #fff;
-            font-size: 16px;
+            font-size: 18px;
             cursor: pointer;
+            align-self: center;
+            transition: background 0.3s;
         }
         input[type="submit"]:hover {
-            background-color: #0056b3;
+            background: linear-gradient(135deg, #0056b3, #004099);
         }
     </style>
 </head>
@@ -124,34 +150,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php endif; ?>
 
     <form method="POST">
-        <label for="FW_VERSION">Firmware Version (FW_VERSION):</label>
+        <label for="FW_VERSION">PS4 Firmware Version:</label>
         <select id="FW_VERSION" name="FW_VERSION" required>
-            <option value="900" <?php if ($config['FW_VERSION'] == '900') echo 'selected'; ?>>900</option>
-            <option value="1000" <?php if ($config['FW_VERSION'] == '1000') echo 'selected'; ?>>1000</option>
-            <option value="1001" <?php if ($config['FW_VERSION'] == '1001') echo 'selected'; ?>>1001</option>
-            <option value="1100" <?php if ($config['FW_VERSION'] == '1100') echo 'selected'; ?>>1100</option>
+            <option value="900" <?php if ($config['FW_VERSION'] == '900') echo 'selected'; ?>>9.00</option>
+            <option value="1000" <?php if ($config['FW_VERSION'] == '1000') echo 'selected'; ?>>10.00</option>
+            <option value="1001" <?php if ($config['FW_VERSION'] == '1001') echo 'selected'; ?>>10.01</option>
+            <option value="1100" <?php if ($config['FW_VERSION'] == '1100') echo 'selected'; ?>>11.00</option>
         </select>
 
-        <label for="TIMEOUT">Timeout (TIMEOUT) in seconds:</label>
+        <label for="TIMEOUT">Timeout in seconds:</label>
         <input type="number" id="TIMEOUT" name="TIMEOUT" value="<?php echo htmlspecialchars($config['TIMEOUT']); ?>" required>
 
-        <label for="WAIT_AFTER_PIN">Wait After Pin (WAIT_AFTER_PIN) in seconds:</label>
+        <label for="WAIT_AFTER_PIN">Wait After Pin in seconds:</label>
         <input type="number" id="WAIT_AFTER_PIN" name="WAIT_AFTER_PIN" value="<?php echo htmlspecialchars($config['WAIT_AFTER_PIN']); ?>" required>
 
-        <label for="GROOM_DELAY">Groom Delay (GROOM_DELAY):</label>
+        <label for="GROOM_DELAY">Groom Delay:</label>
         <input type="number" id="GROOM_DELAY" name="GROOM_DELAY" value="<?php echo htmlspecialchars($config['GROOM_DELAY']); ?>" required>
 
-        <label for="BUFFER_SIZE">Buffer Size (BUFFER_SIZE) in bytes:</label>
+        <label for="BUFFER_SIZE">Buffer Size in bytes:</label>
         <input type="number" id="BUFFER_SIZE" name="BUFFER_SIZE" value="<?php echo htmlspecialchars($config['BUFFER_SIZE']); ?>" required>
 
-        <label for="AUTO_RETRY">Auto Retry (AUTO_RETRY):</label>
-        <input type="checkbox" id="AUTO_RETRY" name="AUTO_RETRY" <?php if ($config['AUTO_RETRY']) echo 'checked'; ?>>
+        <div class="checkbox-group">
+            <input type="checkbox" id="AUTO_RETRY" name="AUTO_RETRY" <?php if ($config['AUTO_RETRY']) echo 'checked'; ?>>
+            <label for="AUTO_RETRY">Auto Retry</label>
+        </div>
 
-        <label for="NO_WAIT_PADI">No Wait PADI (NO_WAIT_PADI):</label>
-        <input type="checkbox" id="NO_WAIT_PADI" name="NO_WAIT_PADI" <?php if ($config['NO_WAIT_PADI']) echo 'checked'; ?>>
+        <div class="checkbox-group">
+            <input type="checkbox" id="NO_WAIT_PADI" name="NO_WAIT_PADI" <?php if ($config['NO_WAIT_PADI']) echo 'checked'; ?>>
+            <label for="NO_WAIT_PADI">No Wait PADI</label>
+        </div>
 
-        <label for="REAL_SLEEP">Real Sleep (REAL_SLEEP):</label>
-        <input type="checkbox" id="REAL_SLEEP" name="REAL_SLEEP" <?php if ($config['REAL_SLEEP']) echo 'checked'; ?>>
+        <div class="checkbox-group">
+            <input type="checkbox" id="REAL_SLEEP" name="REAL_SLEEP" <?php if ($config['REAL_SLEEP']) echo 'checked'; ?>>
+            <label for="REAL_SLEEP">Real Sleep</label>
+        </div>
 
         <input type="submit" value="Update Configuration">
     </form>

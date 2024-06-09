@@ -19,13 +19,14 @@ BUFFER_SIZE=$(jq -r '.BUFFER_SIZE' $CONFIG_FILE)
 AUTO_RETRY=$(jq -r '.AUTO_RETRY' $CONFIG_FILE)
 NO_WAIT_PADI=$(jq -r '.NO_WAIT_PADI' $CONFIG_FILE)
 REAL_SLEEP=$(jq -r '.REAL_SLEEP' $CONFIG_FILE)
+DIR=$(jq -r '.install_dir' $CONFIG_FILE)
 
 # Define the paths to the stage1 and stage2 payloads based on FW_VERSION
 STAGE1_PAYLOAD="stage1/stage1_${FW_VERSION}.bin"
 STAGE2_PAYLOAD="stage2/stage2_${FW_VERSION}.bin"
 
 # Run pppwn with the configuration values
-CMD="./pppwn --interface eth0 --fw $FW_VERSION --stage1 $STAGE1_PAYLOAD --stage2 $STAGE2_PAYLOAD"
+CMD="$DIR/pppwn --interface eth0 --fw $FW_VERSION --stage1 $STAGE1_PAYLOAD --stage2 $STAGE2_PAYLOAD"
 
 # Append optional parameters
 [ "$TIMEOUT" != "null" ] && CMD+=" --timeout $TIMEOUT"

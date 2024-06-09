@@ -1,7 +1,7 @@
 # PPP options for the PPPoE Server
 # LOC: GPL
-#require-pap
-require-chap
+require-pap
+#require-chap
 login
 lcp-echo-interval 10
 lcp-echo-failure 2

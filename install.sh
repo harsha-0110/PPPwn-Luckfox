@@ -9,17 +9,31 @@ CONFIG_DIR="/etc/pppwn"
 CONFIG_FILE="$CONFIG_DIR/config.json"
 
 # Update and install dependencies
-sudo apt-get update
+#sudo apt-get update
 sudo apt-get install -y nginx php-fpm php-mysql jq pppoe pppoeconf
 
 # Create configuration directory if it doesn't exist
-sudo mkdir -p $CONFIG_DIR
-
-# Copy the default config file if it doesn't exist
-if [ ! -f "$CONFIG_FILE" ]; then
-    sudo cp $CURRENT_DIR/config.json $CONFIG_FILE
+if [ ! -d "$CONFIG_DIR" ]; then
+    sudo mkdir -p $CONFIG_DIR
 fi
-sudo chmod 777 $CONFIG_FILE
+
+# Create the config.json file with the install directory if it doesn't exist
+if [ ! -f "$CONFIG_FILE" ]; then
+    sudo tee $CONFIG_FILE > /dev/null <<EOL
+{
+    "FW_VERSION": "1100",
+    "TIMEOUT": "10",
+    "WAIT_AFTER_PIN": "1",
+    "GROOM_DELAY": "4",
+    "BUFFER_SIZE": "0",
+    "AUTO_RETRY": true,
+    "NO_WAIT_PADI": false,
+    "REAL_SLEEP": false,
+    "install_dir": "$CURRENT_DIR"
+}
+EOL
+    sudo chmod 777 $CONFIG_FILE
+fi
 
 # Remove the web directory if it already exists
 if [ -d "$WEB_DIR" ]; then
@@ -42,7 +56,7 @@ server {
     server_name _;
 
     root $WEB_DIR;
-    index config.php index.html index.htm;
+    index index.php index.html index.htm;
 
     location / {
         try_files \$uri \$uri/ =404;
