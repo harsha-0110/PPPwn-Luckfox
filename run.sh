@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the path to the configuration file
-CONFIG_FILE="/etc/pppwn/config.json"  # Replace with the actual path to your config.json
+CONFIG_FILE="/etc/pppwn/config.json"
 
 # Check if jq is installed, if not, install it
 if ! command -v jq &> /dev/null; then
