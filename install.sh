@@ -8,8 +8,13 @@ PPPWN_SERVICE="/etc/systemd/system/pppwn.service"
 CONFIG_DIR="/etc/pppwn"
 CONFIG_FILE="$CONFIG_DIR/config.json"
 
+# Change permissions of the following files
+sudo chmod +x ./update.sh
+sudo chmod +x ./pppwn
+sudo chmod +x ./pppoe.sh
+
 # Update and install dependencies
-#sudo apt-get update
+sudo apt-get update
 sudo apt-get install -y nginx php-fpm php-mysql jq pppoe pppoeconf
 
 # Create configuration directory if it doesn't exist
