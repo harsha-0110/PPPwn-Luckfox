@@ -1,6 +1,6 @@
 # PPPwn-Luckfox
 
-An alternative method of running PPPwn on Luckfox Pico Mini/Plus/Pro/Max with additional features.
+An alternative method to [0x1iii1ii/PPPwn-Luckfox](https://github.com/0x1iii1ii/PPPwn-Luckfox) running PPPwn on Luckfox Pico Mini/Plus/Pro/Max with additional features.
 
 ## Features
 
@@ -68,7 +68,7 @@ To update the project with the latest changes from the repository:
    ```
 
 ## Notes
-- This repo is a work in progress and has not been tested on a Luckfox.
+- This repo is a work in progress and has not been tested on a Luckfox Pico.
 - The `pppwn` Nightly Build for `x86_64-linux-musl` has been used in the repo, as it was developed on a PC while awaiting the arrival of the Luckfox device.
 - To test it on a Luckfox, replace `pppwn` with the suitable PPPwn Nightly build for Luckfox from [PPPwn_cpp](https://github.com/xfangfang/PPPwn_cpp).
 
