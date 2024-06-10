@@ -74,7 +74,7 @@ To update the project with the latest changes from the repository:
 
 ## Future Plans
 - Update the payloads page to host payloads for supported firmware.
-- Emulate a USB drive with `goldhen.bin`.
+- Emulate a USB drive with `goldhen.bin` and other payloads.
 
 ## Contributing
 
