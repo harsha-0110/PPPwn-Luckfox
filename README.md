@@ -8,6 +8,7 @@ An alternative method to [0x1iii1ii/PPPwn-Luckfox](https://github.com/0x1iii1ii/
 - Hosts a web interface for configuring PPPwn and hosting payloads.
 - Starts a PPPoE server to assign IP addresses to PS4.
 - Supports PS4 firmware versions 9.00, 10.00, 10.01 & 11.00.
+- USB emulation with goldhen.bin (not tested).
 
 ## Prerequisites
 
@@ -69,12 +70,11 @@ To update the project with the latest changes from the repository:
 
 ## Notes
 - This repo is a work in progress and has not been tested on a Luckfox Pico.
-- The `pppwn` Nightly Build for `x86_64-linux-musl` has been used in the repo, as it was developed on a PC while awaiting the arrival of the Luckfox device.
-- To test it on a Luckfox, replace `pppwn` with the suitable PPPwn Nightly build for Luckfox from [PPPwn_cpp](https://github.com/xfangfang/PPPwn_cpp).
 
 ## Future Plans
 - Update the payloads page to host payloads for supported firmware.
-- Emulate a USB drive with `goldhen.bin` and other payloads.
+- Emulate a USB drive with `goldhen.bin`(Implemented and need to be tested).
+- Emulate a USB drive with `payload.bin` in conjunction with Lightining Mods stage2 payload loader.
 
 ## Contributing
 

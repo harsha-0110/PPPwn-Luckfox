@@ -34,6 +34,7 @@ if [ ! -f "$CONFIG_FILE" ]; then
     "AUTO_RETRY": true,
     "NO_WAIT_PADI": false,
     "REAL_SLEEP": false,
+    "GOLDHEN_MOUNT": true,
     "install_dir": "$CURRENT_DIR"
 }
 EOL
