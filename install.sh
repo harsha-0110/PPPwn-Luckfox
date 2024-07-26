@@ -63,7 +63,6 @@ PHP_FPM_SOCK="/var/run/php/php${PHP_VERSION}-fpm.sock"
 sudo tee $NGINX_CONF > /dev/null <<EOL
 server {
     listen 80 default_server;
-    listen [::]:80 default_server;
     server_name _;
 
     root $WEB_DIR;
