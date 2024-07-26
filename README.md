@@ -33,9 +33,9 @@ An alternative method to [0x1iii1ii/PPPwn-Luckfox](https://github.com/0x1iii1ii/
 4. Run the following commands in SSH:
    ```sh
    sudo apt install git
-   git clone https://github.com/harsha-0110/PPPwn-Luckfox.git
+   sudo git clone https://github.com/harsha-0110/PPPwn-Luckfox.git
    cd PPPwn-Luckfox
-   chmod +x install.sh
+   sudo chmod +x install.sh
    sudo ./install.sh
    ```
 
