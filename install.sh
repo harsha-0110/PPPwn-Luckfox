@@ -91,8 +91,8 @@ EOL
 sudo ln -sf $NGINX_CONF /etc/nginx/sites-enabled/default
 
 # Start and test Nginx
-sudo systemctl start nginx
-sudo nginx -t && sudo systemctl reload nginx
+# sudo systemctl start nginx
+# sudo nginx -t && sudo systemctl reload nginx
 
 # Set up systemd service for pppwn
 sudo tee $PPPWN_SERVICE > /dev/null <<EOL
@@ -109,7 +109,7 @@ WantedBy=multi-user.target
 EOL
 
 sudo systemctl enable pppwn.service
-sudo systemctl start pppwn.service
+#sudo systemctl start pppwn.service
 
 # Set up pppoe configuration
 sudo cp $CURRENT_DIR/pppoe/pppoe.conf /etc/ppp/peers/
@@ -120,4 +120,4 @@ sudo cp $CURRENT_DIR/pppoe/ipaddress_pool /etc/ppp/
 # Start the PPPoE server with the correct network interface
 sudo bash ./pppoe.sh
 
-echo "Installation complete. Please ensure all configurations are correct."
+echo "Installation complete."
