@@ -17,7 +17,6 @@ function load_config($file) {
             'AUTO_RETRY' => false,
             'NO_WAIT_PADI' => false,
             'REAL_SLEEP' => false,
-            'GOLDHEN_MOUNT' => true
         ); // default values
     }
 }
@@ -42,7 +41,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $config['AUTO_RETRY'] = isset($_POST['AUTO_RETRY']);
         $config['NO_WAIT_PADI'] = isset($_POST['NO_WAIT_PADI']);
         $config['REAL_SLEEP'] = isset($_POST['REAL_SLEEP']);
-        $config['GOLDHEN_MOUNT'] = isset($_POST['GOLDHEN_MOUNT']);
         save_config($config_file, $config);
         $message = "Configuration updated successfully.";
     } else {
@@ -186,12 +184,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <input type="checkbox" id="REAL_SLEEP" name="REAL_SLEEP" <?php if ($config['REAL_SLEEP']) echo 'checked'; ?>>
             <label for="REAL_SLEEP">Real Sleep</label>
         </div>
-
-        <div class="checkbox-group">
-            <input type="checkbox" id="GOLDHEN_MOUNT" name="GOLDHEN_MOUNT" <?php if ($config['GOLDHEN_MOUNT']) echo 'checked'; ?>>
-            <label for="GOLDHEN_MOUNT">Mount USB with GoldHen</label>
-        </div>
-
         <input type="submit" value="Update Configuration">
     </form>
 </div>

@@ -13,44 +13,10 @@ AUTO_RETRY=$(jq -r '.AUTO_RETRY' $CONFIG_FILE)
 NO_WAIT_PADI=$(jq -r '.NO_WAIT_PADI' $CONFIG_FILE)
 REAL_SLEEP=$(jq -r '.REAL_SLEEP' $CONFIG_FILE)
 DIR=$(jq -r '.install_dir' $CONFIG_FILE)
-GOLDHEN_MOUNT=$(jq -r '.GOLDHEN_MOUNT' $CONFIG_FILE)
 
 # Define the paths to the stage1 and stage2 payloads based on FW_VERSION
 STAGE1_PAYLOAD="$DIR/stage1/stage1_${FW_VERSION}.bin"
 STAGE2_PAYLOAD="$DIR/stage2/stage2_${FW_VERSION}.bin"
-
-# Function to emulate USB drive
-emulate_usb_drive() {
-    # Create a disk image file
-    USB_IMG="/tmp/goldhen.img"
-    dd if=/dev/zero of=$USB_IMG bs=1M count=16
-    mkfs.vfat $USB_IMG
-
-    # Mount the image and copy goldhen.bin
-    MOUNT_DIR="/mnt/goldhen"
-    mkdir -p $MOUNT_DIR
-    sudo mount -o loop $USB_IMG $MOUNT_DIR
-    sudo cp .$DIR/goldhen/goldhen.bin $MOUNT_DIR
-    sudo umount $MOUNT_DIR
-
-    # Load the g_mass_storage module
-    sudo modprobe g_mass_storage file=$USB_IMG stall=0
-}
-
-# Function to clean up USB drive emulation
-cleanup_usb_drive() {
-    # Unload the g_mass_storage module
-    sudo rmmod g_mass_storage
-
-    # Remove the temporary image file
-    rm -f /tmp/goldhen.img
-}
-
-# Check if GOLDHEN_MOUNT is true and emulate USB drive
-if [ "$GOLDHEN_MOUNT" == "true" ]; then
-    echo "GOLDHEN_MOUNT is true, emulating USB drive with goldhen.bin..."
-    emulate_usb_drive
-fi
 
 # Run pppwn with the configuration values
 CMD="$DIR/pppwn --interface eth0 --fw $FW_VERSION --stage1 $STAGE1_PAYLOAD --stage2 $STAGE2_PAYLOAD"
@@ -70,10 +36,3 @@ $CMD
 # Start PPPoE server
 echo "pppwn executed successfully, starting PPPoE server..."
 sudo bash $DIR/pppoe.sh
-
-
-# Cleanup USB drive if GOLDHEN_MOUNT was true
-if [ "$GOLDHEN_MOUNT" == "true" ]; then
-    echo "Cleaning up USB drive emulation..."
-    cleanup_usb_drive
-fi
