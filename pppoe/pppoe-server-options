@@ -2,7 +2,7 @@
 # LOC: GPL
 require-pap
 #require-chap
-login
+auth
 lcp-echo-interval 10
 lcp-echo-failure 2
 ms-dns 8.8.8.8

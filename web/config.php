@@ -140,17 +140,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 switch (fwVersion) {
                     case '900':
-                        options = ['HEN', 'GoldHEN'];
+                        options = ['hen', 'goldhen'];
+                        break;
+                    case '903':
+                        options = ['hen'];
+                        break;
+                    case '904':
+                        options = ['hen'];
+                        break;
+                    case '950':
+                        options = ['hen'];
+                        break;
+                    case '951':
+                        options = ['hen'];
                         break;
                     case '960':
-                        options = ['HEN'];
+                        options = ['hen', 'goldhen'];
                         break;
                     case '1000':
+                        options = ['hen', 'goldhen'];
+                        break;
                     case '1001':
-                        options = ['GoldHEN'];
+                        options = ['hen', 'goldhen'];
+                        break;
+                    case '1050':
+                        options = ['hen'];
+                        break;
+                    case '1070':
+                        options = ['hen'];
+                        break;
+                    case '1071':
+                        options = ['hen'];
                         break;
                     case '1100':
-                        options = ['HEN', 'GoldHEN'];
+                        options = ['hen', 'goldhen'];
                         break;
                 }
 

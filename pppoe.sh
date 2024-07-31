@@ -12,3 +12,6 @@ pppoe-server -C isp -L 192.168.1.1 -R 192.168.1.2 -p /etc/ppp/ipaddress_pool -I 
 # Set Firewall rules
 iptables -t nat -F POSTROUTING
 iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+
+# Allow PPPoE clients to access the web server on port 80
+iptables -A FORWARD -i ppp0 -o eth0 -p tcp --dport 80 -j ACCEPT
