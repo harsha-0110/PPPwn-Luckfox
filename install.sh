@@ -105,7 +105,7 @@ ExecStart=$CURRENT_DIR/run.sh
 [Install]
 WantedBy=multi-user.target
 EOL
-
+sudo chmod +x /etc/systemd/system/pppwn.service
 sudo systemctl enable pppwn.service
 
 # Set up pppoe configuration
