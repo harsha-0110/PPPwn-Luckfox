@@ -7,17 +7,6 @@ function load_config($file) {
     if (file_exists($file)) {
         $config_data = file_get_contents($file);
         return json_decode($config_data, true);
-    } else {
-        return array(
-            'FW_VERSION' => '1100', 
-            'TIMEOUT' => '10',
-            'WAIT_AFTER_PIN' => '1',
-            'GROOM_DELAY' => '4',
-            'BUFFER_SIZE' => '0',
-            'AUTO_RETRY' => false,
-            'NO_WAIT_PADI' => false,
-            'REAL_SLEEP' => false,
-        ); // default values
     }
 }
 
@@ -34,6 +23,7 @@ $config = load_config($config_file);
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['FW_VERSION']) && isset($_POST['TIMEOUT'])) {
         $config['FW_VERSION'] = $_POST['FW_VERSION'];
+        $config['HEN_TYPE'] = $_POST['HEN_TYPE'];
         $config['TIMEOUT'] = $_POST['TIMEOUT'];
         $config['WAIT_AFTER_PIN'] = $_POST['WAIT_AFTER_PIN'];
         $config['GROOM_DELAY'] = $_POST['GROOM_DELAY'];
@@ -41,13 +31,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $config['AUTO_RETRY'] = isset($_POST['AUTO_RETRY']);
         $config['NO_WAIT_PADI'] = isset($_POST['NO_WAIT_PADI']);
         $config['REAL_SLEEP'] = isset($_POST['REAL_SLEEP']);
+        $config['AUTO_START'] = isset($_POST['AUTO_START']);
         save_config($config_file, $config);
         $message = "Configuration updated successfully.";
     } else {
-        $message = "Error: Please provide both FW_VERSION and TIMEOUT.";
+        $message = "Error: Please provide all values.";
     }
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -139,11 +129,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             background: linear-gradient(135deg, #0056b3, #004099);
         }
     </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const fwVersionSelect = document.getElementById('FW_VERSION');
+            const exploitOptionSelect = document.getElementById('HEN_TYPE');
+
+            function updateExploitOptions() {
+                const fwVersion = fwVersionSelect.value;
+                let options = [];
+
+                switch (fwVersion) {
+                    case '900':
+                        options = ['HEN', 'GoldHEN'];
+                        break;
+                    case '960':
+                        options = ['HEN'];
+                        break;
+                    case '1000':
+                    case '1001':
+                        options = ['GoldHEN'];
+                        break;
+                    case '1100':
+                        options = ['HEN', 'GoldHEN'];
+                        break;
+                }
+
+                exploitOptionSelect.innerHTML = '';
+                options.forEach(option => {
+                    const opt = document.createElement('option');
+                    opt.value = option;
+                    opt.textContent = option;
+                    exploitOptionSelect.appendChild(opt);
+                });
+            }
+
+            fwVersionSelect.addEventListener('change', updateExploitOptions);
+
+            updateExploitOptions();  // Initial call to set options based on the loaded configuration
+        });
+    </script>
 </head>
 <body>
 
 <div class="container">
-    <h1>PPPwn Configuration</h1>
+    <h1>PPPwn-Luckfox Configuration</h1>
 
     <?php if (isset($message)): ?>
         <div class="message"><?php echo $message; ?></div>
@@ -153,9 +182,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <label for="FW_VERSION">PS4 Firmware Version:</label>
         <select id="FW_VERSION" name="FW_VERSION" required>
             <option value="900" <?php if ($config['FW_VERSION'] == '900') echo 'selected'; ?>>9.00</option>
+            <option value="960" <?php if ($config['FW_VERSION'] == '960') echo 'selected'; ?>>9.60</option>
             <option value="1000" <?php if ($config['FW_VERSION'] == '1000') echo 'selected'; ?>>10.00</option>
             <option value="1001" <?php if ($config['FW_VERSION'] == '1001') echo 'selected'; ?>>10.01</option>
             <option value="1100" <?php if ($config['FW_VERSION'] == '1100') echo 'selected'; ?>>11.00</option>
+        </select>
+
+        <label for="HEN_TYPE">Hen/Goldhen:</label>
+        <select id="HEN_TYPE" name="HEN_TYPE" required>
+            <!-- Options will be populated by JavaScript based on FW_VERSION -->
         </select>
 
         <label for="TIMEOUT">Timeout in seconds:</label>
@@ -183,6 +218,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="checkbox-group">
             <input type="checkbox" id="REAL_SLEEP" name="REAL_SLEEP" <?php if ($config['REAL_SLEEP']) echo 'checked'; ?>>
             <label for="REAL_SLEEP">Real Sleep</label>
+        </div>
+
+        <div class="checkbox-group">
+            <input type="checkbox" id="AUTO_START" name="AUTO_START" <?php if ($config['AUTO_START']) echo 'checked'; ?>>
+            <label for="AUTO_START">Auto Run on Start-Up</label>
         </div>
         <input type="submit" value="Update Configuration">
     </form>

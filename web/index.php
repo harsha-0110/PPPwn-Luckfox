@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PPPwn Dashboard</title>
+    <title>PPPwn-Luckfox Dashboard</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -63,12 +63,11 @@
 
 <div class="container">
     <h1>PPPwn Dashboard</h1>
-    <a href="config.php" class="button">Config</a>
-    <a href="payloads.html" class="button">Payloads</a>
     <form method="post" action="" style="display:inline;">
         <button type="submit" name="run_pppwn" class="button">Run PPPwn</button>
     </form>
-
+    <a href="payloads.html" class="button">Payloads</a>
+    <a href="config.php" class="button">Config</a>
     <?php
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['run_pppwn'])) {
         // Read config.json to get the installation directory
@@ -78,8 +77,7 @@
             if (isset($config_data['install_dir'])) {
                 // Execute the run.sh script from the installation directory
                 $installation_dir = $config_data['install_dir'];
-                $output = shell_exec("sudo bash $installation_dir/run.sh 2>&1");
-                echo "<div class='output'><h2>Script Output:</h2><pre>$output</pre></div>";
+                $output = shell_exec("sudo bash $installation_dir/web-run.sh");
             } else {
                 echo "<div class='output'><h2>Error:</h2><p>Installation directory not found or invalid.</p></div>";
             }

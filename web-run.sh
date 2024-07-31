@@ -32,14 +32,11 @@ CMD="$DIR/pppwn --interface eth0 --fw $FW_VERSION --stage1 $STAGE1_PAYLOAD --sta
 [ "$NO_WAIT_PADI" == "true" ] && CMD+=" --no-wait-padi"
 [ "$REAL_SLEEP" == "true" ] && CMD+=" --real-sleep"
 
-#PPPwn Execution
-if [ "$AUTO_RUN" = "true" ]; then
-    #Stop pppoe server
-    sudo pkill -f pppoe-server
-    $CMD
-else
-    echo "Auto Start is disabled, Skipping PPPwn..."
-fi
+#Stop pppoe server
+sudo pkill -f pppoe-server
+
+# Execute the command
+$CMD
 
 # Start PPPoE server
 echo "pppwn executed successfully, starting PPPoE server..."

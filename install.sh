@@ -9,13 +9,16 @@ CONFIG_DIR="/etc/pppwn"
 CONFIG_FILE="$CONFIG_DIR/config.json"
 
 # Change permissions of the following files
-sudo chmod +x ./update.sh
 sudo chmod +x ./pppwn
 sudo chmod +x ./pppoe.sh
+sudo chmod +x ./run.sh
+sudo chmod +x ./update.sh
+sudo chmod +x ./web-run.sh
 
 # Update and install dependencies
 sudo apt-get update
-sudo apt-get install -y nginx php-fpm php-mysql jq pppoe pppoeconf
+sudo apt upgrade
+sudo apt-get install -y nginx php-fpm php-mysql jq pppoe pppoeconf iptables
 
 # Create configuration directory if it doesn't exist
 if [ ! -d "$CONFIG_DIR" ]; then
@@ -27,6 +30,7 @@ if [ ! -f "$CONFIG_FILE" ]; then
     sudo tee $CONFIG_FILE > /dev/null <<EOL
 {
     "FW_VERSION": "1100",
+    "HEN_TYPE": "goldhen",
     "TIMEOUT": "10",
     "WAIT_AFTER_PIN": "1",
     "GROOM_DELAY": "4",
@@ -34,6 +38,7 @@ if [ ! -f "$CONFIG_FILE" ]; then
     "AUTO_RETRY": true,
     "NO_WAIT_PADI": false,
     "REAL_SLEEP": false,
+    "AUTO_START": false,
     "install_dir": "$CURRENT_DIR"
 }
 EOL
@@ -88,12 +93,6 @@ EOL
 
 # Enable Nginx site configuration
 sudo ln -sf $NGINX_CONF /etc/nginx/sites-enabled/default
-
-# Start and test Nginx
-# sudo systemctl start nginx
-# sudo nginx -t && sudo systemctl reload nginx
-
-# Set up systemd service for pppwn
 sudo tee $PPPWN_SERVICE > /dev/null <<EOL
 [Unit]
 Description=PPPwn Service
@@ -108,15 +107,12 @@ WantedBy=multi-user.target
 EOL
 
 sudo systemctl enable pppwn.service
-#sudo systemctl start pppwn.service
 
 # Set up pppoe configuration
-sudo cp $CURRENT_DIR/pppoe/pppoe.conf /etc/ppp/peers/
 sudo cp $CURRENT_DIR/pppoe/pppoe-server-options /etc/ppp/
 sudo cp $CURRENT_DIR/pppoe/pap-secrets /etc/ppp/
 sudo cp $CURRENT_DIR/pppoe/ipaddress_pool /etc/ppp/
 
-# Start the PPPoE server with the correct network interface
-sudo bash ./pppoe.sh
-
 echo "Installation complete."
+
+sudo reboot
