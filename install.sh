@@ -96,7 +96,7 @@ sudo ln -sf $NGINX_CONF /etc/nginx/sites-enabled/default
 sudo tee $PPPWN_SERVICE > /dev/null <<EOL
 [Unit]
 Description=PPPwn Service
-After=network.target
+After=multi-user.target
 
 [Service]
 Type=simple
