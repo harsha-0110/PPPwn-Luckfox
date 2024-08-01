@@ -205,9 +205,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <label for="FW_VERSION">PS4 Firmware Version:</label>
         <select id="FW_VERSION" name="FW_VERSION" required>
             <option value="900" <?php if ($config['FW_VERSION'] == '900') echo 'selected'; ?>>9.00</option>
+            <option value="903" <?php if ($config['FW_VERSION'] == '903') echo 'selected'; ?>>9.03</option>
+            <option value="904" <?php if ($config['FW_VERSION'] == '904') echo 'selected'; ?>>9.04</option>
+            <option value="950" <?php if ($config['FW_VERSION'] == '950') echo 'selected'; ?>>9.50</option>
+            <option value="951" <?php if ($config['FW_VERSION'] == '951') echo 'selected'; ?>>9.51</option>
             <option value="960" <?php if ($config['FW_VERSION'] == '960') echo 'selected'; ?>>9.60</option>
             <option value="1000" <?php if ($config['FW_VERSION'] == '1000') echo 'selected'; ?>>10.00</option>
             <option value="1001" <?php if ($config['FW_VERSION'] == '1001') echo 'selected'; ?>>10.01</option>
+            <option value="1050" <?php if ($config['FW_VERSION'] == '1050') echo 'selected'; ?>>10.50</option>
+            <option value="1070" <?php if ($config['FW_VERSION'] == '1070') echo 'selected'; ?>>10.70</option>
+            <option value="1071" <?php if ($config['FW_VERSION'] == '1071') echo 'selected'; ?>>10.71</option>
             <option value="1100" <?php if ($config['FW_VERSION'] == '1100') echo 'selected'; ?>>11.00</option>
         </select>
 

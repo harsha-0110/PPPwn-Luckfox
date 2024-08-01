@@ -111,7 +111,6 @@ sudo systemctl enable pppwn.service
 # Set up pppoe configuration
 sudo cp $CURRENT_DIR/pppoe/pppoe-server-options /etc/ppp/
 sudo cp $CURRENT_DIR/pppoe/pap-secrets /etc/ppp/
-sudo cp $CURRENT_DIR/pppoe/ipaddress_pool /etc/ppp/
 
 echo "Installation complete."
 

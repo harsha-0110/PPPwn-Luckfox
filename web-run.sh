@@ -33,7 +33,7 @@ CMD="$DIR/pppwn --interface eth0 --fw $FW_VERSION --stage1 $STAGE1_PAYLOAD --sta
 [ "$REAL_SLEEP" == "true" ] && CMD+=" --real-sleep"
 
 #Stop pppoe server
-sudo pkill -f pppoe-server
+sudo killall pppoe-server
 
 # Execute the command
 $CMD

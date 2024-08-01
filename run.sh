@@ -35,7 +35,7 @@ CMD="$DIR/pppwn --interface eth0 --fw $FW_VERSION --stage1 $STAGE1_PAYLOAD --sta
 #PPPwn Execution
 if [ "$AUTO_RUN" = "true" ]; then
     #Stop pppoe server
-    sudo pkill -f pppoe-server
+    sudo killall pppoe-server
     $CMD
 else
     echo "Auto Start is disabled, Skipping PPPwn..."
