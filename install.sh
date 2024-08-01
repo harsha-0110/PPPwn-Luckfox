@@ -18,7 +18,7 @@ sudo chmod +x ./web-run.sh
 # Update and install dependencies
 sudo apt-get update
 sudo apt upgrade
-sudo apt-get install -y nginx php-fpm php-mysql jq pppoe pppoeconf iptables
+sudo apt-get install -y nginx php-fpm jq pppoe iptables
 
 # Create configuration directory if it doesn't exist
 if [ ! -d "$CONFIG_DIR" ]; then
@@ -105,6 +105,7 @@ ExecStart=$CURRENT_DIR/run.sh
 [Install]
 WantedBy=multi-user.target
 EOL
+
 sudo chmod +x /etc/systemd/system/pppwn.service
 sudo systemctl enable pppwn.service
 

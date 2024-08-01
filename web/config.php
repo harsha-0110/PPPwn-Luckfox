@@ -8,6 +8,7 @@ function load_config($file) {
         $config_data = file_get_contents($file);
         return json_decode($config_data, true);
     }
+    return [];
 }
 
 // Function to save configuration to the file
@@ -21,9 +22,10 @@ $config = load_config($config_file);
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['FW_VERSION']) && isset($_POST['TIMEOUT'])) {
-        $config['FW_VERSION'] = $_POST['FW_VERSION'];
-        $config['HEN_TYPE'] = $_POST['HEN_TYPE'];
+    if (isset($_POST['FW_HEN_VERSION']) && isset($_POST['TIMEOUT'])) {
+        $fw_hen_version = explode('_', $_POST['FW_HEN_VERSION']);
+        $config['FW_VERSION'] = $fw_hen_version[0];
+        $config['HEN_TYPE'] = $fw_hen_version[1];
         $config['TIMEOUT'] = $_POST['TIMEOUT'];
         $config['WAIT_AFTER_PIN'] = $_POST['WAIT_AFTER_PIN'];
         $config['GROOM_DELAY'] = $_POST['GROOM_DELAY'];
@@ -129,68 +131,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             background: linear-gradient(135deg, #0056b3, #004099);
         }
     </style>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const fwVersionSelect = document.getElementById('FW_VERSION');
-            const exploitOptionSelect = document.getElementById('HEN_TYPE');
-
-            function updateExploitOptions() {
-                const fwVersion = fwVersionSelect.value;
-                let options = [];
-
-                switch (fwVersion) {
-                    case '900':
-                        options = ['hen', 'goldhen'];
-                        break;
-                    case '903':
-                        options = ['hen'];
-                        break;
-                    case '904':
-                        options = ['hen'];
-                        break;
-                    case '950':
-                        options = ['hen'];
-                        break;
-                    case '951':
-                        options = ['hen'];
-                        break;
-                    case '960':
-                        options = ['hen', 'goldhen'];
-                        break;
-                    case '1000':
-                        options = ['hen', 'goldhen'];
-                        break;
-                    case '1001':
-                        options = ['hen', 'goldhen'];
-                        break;
-                    case '1050':
-                        options = ['hen'];
-                        break;
-                    case '1070':
-                        options = ['hen'];
-                        break;
-                    case '1071':
-                        options = ['hen'];
-                        break;
-                    case '1100':
-                        options = ['hen', 'goldhen'];
-                        break;
-                }
-
-                exploitOptionSelect.innerHTML = '';
-                options.forEach(option => {
-                    const opt = document.createElement('option');
-                    opt.value = option;
-                    opt.textContent = option;
-                    exploitOptionSelect.appendChild(opt);
-                });
-            }
-
-            fwVersionSelect.addEventListener('change', updateExploitOptions);
-
-            updateExploitOptions();  // Initial call to set options based on the loaded configuration
-        });
-    </script>
 </head>
 <body>
 
@@ -202,25 +142,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php endif; ?>
 
     <form method="POST">
-        <label for="FW_VERSION">PS4 Firmware Version:</label>
-        <select id="FW_VERSION" name="FW_VERSION" required>
-            <option value="900" <?php if ($config['FW_VERSION'] == '900') echo 'selected'; ?>>9.00</option>
-            <option value="903" <?php if ($config['FW_VERSION'] == '903') echo 'selected'; ?>>9.03</option>
-            <option value="904" <?php if ($config['FW_VERSION'] == '904') echo 'selected'; ?>>9.04</option>
-            <option value="950" <?php if ($config['FW_VERSION'] == '950') echo 'selected'; ?>>9.50</option>
-            <option value="951" <?php if ($config['FW_VERSION'] == '951') echo 'selected'; ?>>9.51</option>
-            <option value="960" <?php if ($config['FW_VERSION'] == '960') echo 'selected'; ?>>9.60</option>
-            <option value="1000" <?php if ($config['FW_VERSION'] == '1000') echo 'selected'; ?>>10.00</option>
-            <option value="1001" <?php if ($config['FW_VERSION'] == '1001') echo 'selected'; ?>>10.01</option>
-            <option value="1050" <?php if ($config['FW_VERSION'] == '1050') echo 'selected'; ?>>10.50</option>
-            <option value="1070" <?php if ($config['FW_VERSION'] == '1070') echo 'selected'; ?>>10.70</option>
-            <option value="1071" <?php if ($config['FW_VERSION'] == '1071') echo 'selected'; ?>>10.71</option>
-            <option value="1100" <?php if ($config['FW_VERSION'] == '1100') echo 'selected'; ?>>11.00</option>
-        </select>
-
-        <label for="HEN_TYPE">Hen/Goldhen:</label>
-        <select id="HEN_TYPE" name="HEN_TYPE" required>
-            <!-- Options will be populated by JavaScript based on FW_VERSION -->
+        <label for="FW_HEN_VERSION">PS4 Firmware and Hen/Goldhen:</label>
+        <select id="FW_HEN_VERSION" name="FW_HEN_VERSION" required>
+            <option value="900_hen" <?php if ($config['FW_VERSION'] == '900' && $config['HEN_TYPE'] == 'hen') echo 'selected'; ?>>9.00 - Hen</option>
+            <option value="900_goldhen" <?php if ($config['FW_VERSION'] == '900' && $config['HEN_TYPE'] == 'goldhen') echo 'selected'; ?>>9.00 - Goldhen</option>
+            <option value="903_hen" <?php if ($config['FW_VERSION'] == '903' && $config['HEN_TYPE'] == 'hen') echo 'selected'; ?>>9.03 - Hen</option>
+            <option value="904_hen" <?php if ($config['FW_VERSION'] == '904' && $config['HEN_TYPE'] == 'hen') echo 'selected'; ?>>9.04 - Hen</option>
+            <option value="950_hen" <?php if ($config['FW_VERSION'] == '950' && $config['HEN_TYPE'] == 'hen') echo 'selected'; ?>>9.50 - Hen</option>
+            <option value="951_hen" <?php if ($config['FW_VERSION'] == '951' && $config['HEN_TYPE'] == 'hen') echo 'selected'; ?>>9.51 - Hen</option>
+            <option value="960_hen" <?php if ($config['FW_VERSION'] == '960' && $config['HEN_TYPE'] == 'hen') echo 'selected'; ?>>9.60 - Hen</option>
+            <option value="960_goldhen" <?php if ($config['FW_VERSION'] == '960' && $config['HEN_TYPE'] == 'goldhen') echo 'selected'; ?>>9.60 - Goldhen</option>
+            <option value="1000_hen" <?php if ($config['FW_VERSION'] == '1000' && $config['HEN_TYPE'] == 'hen') echo 'selected'; ?>>10.00 - Hen</option>
+            <option value="1000_goldhen" <?php if ($config['FW_VERSION'] == '1000' && $config['HEN_TYPE'] == 'goldhen') echo 'selected'; ?>>10.00 - Goldhen</option>
+            <option value="1001_hen" <?php if ($config['FW_VERSION'] == '1001' && $config['HEN_TYPE'] == 'hen') echo 'selected'; ?>>10.01 - Hen</option>
+            <option value="1001_goldhen" <?php if ($config['FW_VERSION'] == '1001' && $config['HEN_TYPE'] == 'goldhen') echo 'selected'; ?>>10.01 - Goldhen</option>
+            <option value="1050_hen" <?php if ($config['FW_VERSION'] == '1050' && $config['HEN_TYPE'] == 'hen') echo 'selected'; ?>>10.50 - Hen</option>
+            <option value="1070_hen" <?php if ($config['FW_VERSION'] == '1070' && $config['HEN_TYPE'] == 'hen') echo 'selected'; ?>>10.70 - Hen</option>
+            <option value="1071_hen" <?php if ($config['FW_VERSION'] == '1071' && $config['HEN_TYPE'] == 'hen') echo 'selected'; ?>>10.71 - Hen</option>
+            <option value="1100_hen" <?php if ($config['FW_VERSION'] == '1100' && $config['HEN_TYPE'] == 'hen') echo 'selected'; ?>>11.00 - Hen</option>
+            <option value="1100_goldhen" <?php if ($config['FW_VERSION'] == '1100' && $config['HEN_TYPE'] == 'goldhen') echo 'selected'; ?>>11.00 - Goldhen</option>
         </select>
 
         <label for="TIMEOUT">Timeout in seconds:</label>
