@@ -13,7 +13,6 @@ BUFFER_SIZE=$(jq -r '.BUFFER_SIZE' $CONFIG_FILE)
 AUTO_RETRY=$(jq -r '.AUTO_RETRY' $CONFIG_FILE)
 NO_WAIT_PADI=$(jq -r '.NO_WAIT_PADI' $CONFIG_FILE)
 REAL_SLEEP=$(jq -r '.REAL_SLEEP' $CONFIG_FILE)
-AUTO_START=$(jq -r '.AUTO_START' $CONFIG_FILE)
 DIR=$(jq -r '.install_dir' $CONFIG_FILE)
 
 # Define the paths to the stage1 and stage2 payloads based on FW_VERSION
