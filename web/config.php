@@ -142,25 +142,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php endif; ?>
 
     <form method="POST">
-        <label for="FW_HEN_VERSION">PS4 Firmware and Hen/Goldhen:</label>
+        <label for="FW_HEN_VERSION">PS4 Firmware and Goldhen/Hen:</label>
         <select id="FW_HEN_VERSION" name="FW_HEN_VERSION" required>
-            <option value="900_hen" <?php if ($config['FW_VERSION'] == '900' && $config['HEN_TYPE'] == 'hen') echo 'selected'; ?>>9.00 - Hen</option>
             <option value="900_goldhen" <?php if ($config['FW_VERSION'] == '900' && $config['HEN_TYPE'] == 'goldhen') echo 'selected'; ?>>9.00 - Goldhen</option>
+            <option value="960_goldhen" <?php if ($config['FW_VERSION'] == '960' && $config['HEN_TYPE'] == 'goldhen') echo 'selected'; ?>>9.60 - Goldhen</option>
+            <option value="1000_goldhen" <?php if ($config['FW_VERSION'] == '1000' && $config['HEN_TYPE'] == 'goldhen') echo 'selected'; ?>>10.00 - Goldhen</option>
+            <option value="1001_goldhen" <?php if ($config['FW_VERSION'] == '1001' && $config['HEN_TYPE'] == 'goldhen') echo 'selected'; ?>>10.01 - Goldhen</option>
+            <option value="1100_goldhen" <?php if ($config['FW_VERSION'] == '1100' && $config['HEN_TYPE'] == 'goldhen') echo 'selected'; ?>>11.00 - Goldhen</option>
+            <option value="900_hen" <?php if ($config['FW_VERSION'] == '900' && $config['HEN_TYPE'] == 'hen') echo 'selected'; ?>>9.00 - Hen</option>
             <option value="903_hen" <?php if ($config['FW_VERSION'] == '903' && $config['HEN_TYPE'] == 'hen') echo 'selected'; ?>>9.03 - Hen</option>
             <option value="904_hen" <?php if ($config['FW_VERSION'] == '904' && $config['HEN_TYPE'] == 'hen') echo 'selected'; ?>>9.04 - Hen</option>
             <option value="950_hen" <?php if ($config['FW_VERSION'] == '950' && $config['HEN_TYPE'] == 'hen') echo 'selected'; ?>>9.50 - Hen</option>
             <option value="951_hen" <?php if ($config['FW_VERSION'] == '951' && $config['HEN_TYPE'] == 'hen') echo 'selected'; ?>>9.51 - Hen</option>
             <option value="960_hen" <?php if ($config['FW_VERSION'] == '960' && $config['HEN_TYPE'] == 'hen') echo 'selected'; ?>>9.60 - Hen</option>
-            <option value="960_goldhen" <?php if ($config['FW_VERSION'] == '960' && $config['HEN_TYPE'] == 'goldhen') echo 'selected'; ?>>9.60 - Goldhen</option>
             <option value="1000_hen" <?php if ($config['FW_VERSION'] == '1000' && $config['HEN_TYPE'] == 'hen') echo 'selected'; ?>>10.00 - Hen</option>
-            <option value="1000_goldhen" <?php if ($config['FW_VERSION'] == '1000' && $config['HEN_TYPE'] == 'goldhen') echo 'selected'; ?>>10.00 - Goldhen</option>
             <option value="1001_hen" <?php if ($config['FW_VERSION'] == '1001' && $config['HEN_TYPE'] == 'hen') echo 'selected'; ?>>10.01 - Hen</option>
-            <option value="1001_goldhen" <?php if ($config['FW_VERSION'] == '1001' && $config['HEN_TYPE'] == 'goldhen') echo 'selected'; ?>>10.01 - Goldhen</option>
             <option value="1050_hen" <?php if ($config['FW_VERSION'] == '1050' && $config['HEN_TYPE'] == 'hen') echo 'selected'; ?>>10.50 - Hen</option>
             <option value="1070_hen" <?php if ($config['FW_VERSION'] == '1070' && $config['HEN_TYPE'] == 'hen') echo 'selected'; ?>>10.70 - Hen</option>
             <option value="1071_hen" <?php if ($config['FW_VERSION'] == '1071' && $config['HEN_TYPE'] == 'hen') echo 'selected'; ?>>10.71 - Hen</option>
             <option value="1100_hen" <?php if ($config['FW_VERSION'] == '1100' && $config['HEN_TYPE'] == 'hen') echo 'selected'; ?>>11.00 - Hen</option>
-            <option value="1100_goldhen" <?php if ($config['FW_VERSION'] == '1100' && $config['HEN_TYPE'] == 'goldhen') echo 'selected'; ?>>11.00 - Goldhen</option>
         </select>
 
         <label for="TIMEOUT">Timeout in seconds:</label>
