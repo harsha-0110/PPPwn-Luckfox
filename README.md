@@ -1,16 +1,13 @@
 # PPPwn-Luckfox
-
 An alternative method to [0x1iii1ii/PPPwn-Luckfox](https://github.com/0x1iii1ii/PPPwn-Luckfox) running PPPwn on Luckfox Pico Plus/Pro/Max with additional features.
 
 ## Features
-
-- Automates the installation of required services and configurations.
 - Hosts a web interface for configuring PPPwn and hosting payloads.
 - Starts a PPPoE server to assign IP addresses to PS4.
 - Supports PS4 firmware versions 9.00, 9.03, 9.04, 9.50, 9.51, 9.60, 10.00, 10.01, 10.50, 10.70, 10.71 & 11.00.
+- Supports both HEN and GoldHEN, can be configured via web interface.
 
 ## Prerequisites
-
 - Luckfox Pico device
 - An SD card (8GB or above)
 - Ethernet and Type-C cables
@@ -19,21 +16,21 @@ An alternative method to [0x1iii1ii/PPPwn-Luckfox](https://github.com/0x1iii1ii/
 
 ## Downloads
    ### Ubuntu Image 
-   Luckfox Model  | Image
+   Luckfox Model  | Ubuntu Image
    ------------- | -------------
-   Luckfox Pico Pro/Max  | [download]()
-   Luckfox Pico  | [download]()
+   Luckfox Pico Pro/Max  | [download](https://github.com/harsha-0110/PPPwn-Luckfox/releases/download/v1.0/Luckfox.pico.pro-max.img.rar)
+   Luckfox Pico Plus | [download](https://github.com/harsha-0110/PPPwn-Luckfox/releases/download/v1.0/Luckfox.pico.plus.img.rar)
 
    - SocToolKit [download](https://files.luckfox.com/wiki/Luckfox-Pico/Software/SocToolKit.zip)
 
 ## Installation
-1. Download the Ubuntu image for your respective Luckfox Model from above.
+1. Download the Ubuntu image for your respective Luckfox Pico Model, SocToolKit from above and extract them.
 
 2. Follow this [tutorial](https://wiki.luckfox.com/Luckfox-Pico/Luckfox-Pico-quick-start) to flash the OS onto the SD card for the Luckfox.
 
 3. After flashing the OS, eject the SD card and insert it into the Luckfox. Plug the Type-C cable into the Luckfox to power it up and connect one end of the Ethernet cable to the Luckfox and the other end to a router.
 
-4. Log in to the Luckfox using SSH:
+4. Log in to the Luckfox using SSH, the ip address of the LuckFox Pico device can be obtained from Router's admin page or using network tools like Fing:
     ```sh
     Login: pico
     Password: luckfox
@@ -51,25 +48,21 @@ An alternative method to [0x1iii1ii/PPPwn-Luckfox](https://github.com/0x1iii1ii/
 ## Configuration
 
 ### Web Interface
-
 The web interface is available at `http://<your-device-ip>/`.
 - `index.php`: Web-UI dashboard.
 - `config.php`: Allows you to configure PPPwn.
 - `payloads.html`: Hosts various payloads.
 
 ### Manual Configuration
-
 You can manually edit the configuration file located at `/etc/pppwn/config.json`.
 
 ## Usage
 
 ### Running PPPwn
-
 - Automatically runs at the start of the Luckfox (can be turned on/off from config page, off by default).
 - Can also be started manually from `index.php` by clicking the `Run PPPwn` button.
 
 ## Update
-
 To update the project with the latest changes from the repository:
 
 1. Run the update script:
@@ -77,14 +70,24 @@ To update the project with the latest changes from the repository:
    sudo ./update.sh
    ```
 
+## PS4 Setup:
+- Go to `Settings` and then `Network`.
+- Select `Set Up Internet connection` and choose `Use a LAN Cable`.
+- Choose `Custom` setup and choose `PPPoE` for `IP Address Settings`.
+- Enter `ppp` for `PPPoE User ID` and `PPPoE Password`.
+- Choose `Automatic` for `DNS Settings` and `MTU Settings`.
+- Choose `Do Not Use` for `Proxy Server`.
+
 ## Notes
-- This repo is a work in progress and has not been tested on a Luckfox Pico.
+- This repo is a work in progress and may contain bugs.
+- Tested on Luckfox Pico Pro.
+- Installation takes about 25-30 minutes on pro model may take longer on plus model.
 
 ## Future Plans
 - Update the payloads page to host payloads for supported firmware.
+- Make pre-built images with PPPwn-Luckfox setup to make installation easier and faster.
 
 ## Contributing
-
 Feel free to submit issues or pull requests for improvements and bug fixes.
 
 ## Credits
@@ -97,5 +100,4 @@ Special Thanks to
 - [keschort](https://github.com/keschort) for the kernel config for Luckfox Pico.
 
 ## License
-
 This project is licensed under the MIT License. See the `LICENSE` file for more details.
