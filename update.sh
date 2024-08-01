@@ -17,12 +17,12 @@ if check_internet; then
     # Pull the latest changes
     echo "Updating repository..."
     sudo git reset --hard
-    sudo git pull origin main
+    sudo git pull
 
     # Run install.sh to reapply configurations
     echo "Running install.sh..."
     sudo chmod +x ./install.sh
     sudo bash ./install.sh
 else
-    echo "Update aborted due to lack of internet connection."
+    echo "Update aborted due to no internet connection."
 fi
