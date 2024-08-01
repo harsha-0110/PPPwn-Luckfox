@@ -14,22 +14,32 @@ An alternative method to [0x1iii1ii/PPPwn-Luckfox](https://github.com/0x1iii1ii/
 - Luckfox Pico device
 - An SD card (8GB or above)
 - Ethernet and Type-C cables
-- USB drive (for GoldHEN)
+- USB drive (for GoldHEN/Hen)
 - PC (for flashing OS onto the SD card)
 
+## Downloads
+   ### Ubuntu Image 
+   Luckfox Model  | Image
+   ------------- | -------------
+   Luckfox Pico Pro/Max  | [download]()
+   Luckfox Pico  | [download]()
+
+   - SocToolKit [download](https://files.luckfox.com/wiki/Luckfox-Pico/Software/SocToolKit.zip)
+
 ## Installation
+1. Download the Ubuntu image for your respective Luckfox Model from above.
 
-1. Follow this [tutorial](https://wiki.luckfox.com/Luckfox-Pico/Luckfox-Pico-quick-start) to flash the OS onto the SD card for the Luckfox.
+2. Follow this [tutorial](https://wiki.luckfox.com/Luckfox-Pico/Luckfox-Pico-quick-start) to flash the OS onto the SD card for the Luckfox.
 
-2. After flashing the OS, eject the SD card and insert it into the Luckfox. Plug the Type-C cable into the Luckfox to power it up and connect one end of the Ethernet cable to the Luckfox and the other end to a router.
+3. After flashing the OS, eject the SD card and insert it into the Luckfox. Plug the Type-C cable into the Luckfox to power it up and connect one end of the Ethernet cable to the Luckfox and the other end to a router.
 
-3. Log in to the Luckfox using SSH:
+4. Log in to the Luckfox using SSH:
     ```sh
     Login: pico
     Password: luckfox
     ```
 
-4. Run the following commands in SSH:
+5. Run the following commands in SSH:
    ```sh
    sudo apt install git
    sudo git clone https://github.com/harsha-0110/PPPwn-Luckfox.git
@@ -76,6 +86,15 @@ To update the project with the latest changes from the repository:
 ## Contributing
 
 Feel free to submit issues or pull requests for improvements and bug fixes.
+
+## Credits
+Special Thanks to
+- [TheOfficialFloW](https://github.com/TheOfficialFloW) for PPPwn Exploit.
+- [Xfangfang](https://github.com/xfangfang) for PPPwn C++ port.
+- [Sistro](https://github.com/SiSTR0) for GoldHEN.
+- [EchoStrech](https://github.com/EchoStretch) and [BestPig](https://x.com/BestPig) for HEN ports.
+- [0x1iii1ii](https://github.com/0x1iii1ii) for the inspiration for PPPwn-Luckfox.
+- [keschort](https://github.com/keschort) for the kernel config for Luckfox Pico.
 
 ## License
 
