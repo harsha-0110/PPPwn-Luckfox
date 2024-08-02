@@ -68,6 +68,7 @@
     </form>
     <a href="config.php" class="button">Config</a>
     <a href="./900/index.html" class="button">900 Payloads</a>
+    <a href="./1100/index.html" class="button">1100 Payloads</a>
     <?php
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['run_pppwn'])) {
         // Read config.json to get the installation directory

@@ -51,7 +51,6 @@ An alternative method to [0x1iii1ii/PPPwn-Luckfox](https://github.com/0x1iii1ii/
 The web interface is available at `http://<your-device-ip>/`.
 - `index.php`: Web-UI dashboard.
 - `config.php`: Allows you to configure PPPwn.
-- `payloads.html`: Hosts various payloads.
 
 ### Manual Configuration
 You can manually edit the configuration file located at `/etc/pppwn/config.json`.
@@ -84,7 +83,6 @@ To update the project with the latest changes from the repository:
 - Installation takes about 25-30 minutes on pro model may take longer on plus model.
 
 ## Future Plans
-- Update the payloads page to host payloads for supported firmware.
 - Make pre-built images with PPPwn-Luckfox setup to make installation easier and faster.
 
 ## Contributing
@@ -98,6 +96,7 @@ Special Thanks to
 - [EchoStrech](https://github.com/EchoStretch) and [BestPig](https://x.com/BestPig) for HEN ports.
 - [0x1iii1ii](https://github.com/0x1iii1ii) for the inspiration for PPPwn-Luckfox.
 - [keschort](https://github.com/keschort) for the kernel config for Luckfox Pico.
+- And to all the Dev's in PS4 Scene.
 
 ## License
 This project is licensed under the MIT License. See the `LICENSE` file for more details.
