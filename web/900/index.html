@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>PPPwn-Luckfox GoldHEN Host - 9.00</title>
+      <style>
+         body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: black;
+         }
+
+         .container {
+            max-width: 1000px;
+            padding: 40px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+         }
+
+         h1 {
+            font-size: 32px;
+            color: #333;
+         }
+
+         .button {
+            display: inline-block;
+            margin: 5px;
+            width: 200px;
+            padding: 10px 15px;
+            font-size: 18px;
+            color: #fff;
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background 0.3s, transform 0.2s;
+            cursor: pointer;
+         }
+
+         .button:hover {
+            background: linear-gradient(135deg, #0056b3, #004099);
+            transform: translateY(-2px);
+         }
+
+         .button:active {
+            transform: translateY(1px);
+         }
+      </style>
+      <script>
+         const payloadFiles = {
+            ps4debug: "ps4debug.bin",
+            permanentuart: "permanentuart.bin",
+            app2usb: "app2usb.bin",
+            backupdb: "backupdb.bin",
+            pkgb: "pkg-backup.bin",
+            dumperG: "DumperG.bin",
+            dumperU: "DumperU.bin",
+            dumperMGU: "DumperMGU.bin",
+            dumperSGU: "DumperSGU.bin",
+            kernelDumper: "kerneldumper.bin",
+            moduleDumper: "mdumper.bin",
+            restoredb: "restoredb.bin",
+            disableASLR: "disableaslr.bin",
+            disableUpdates: "disableupdates.bin",
+            enableUpdates: "enableupdates.bin",
+            enableBrowser: "enablebrowser.bin",
+            exitIDU: "exitidu.bin",
+            ftp: "ftp.bin",
+            historyBlocker: "historyblocker.bin",
+            rifRenamer: "rifrenamer.bin",
+            orbis: "Orbis-Toolbox-900.bin",
+            gtaLamance: "Lamance9.bin",
+            expul1: "LushModz-1.0-9.00.bin",
+            expul2: "LushModz-4.0-9.00.bin",
+            gtaBQ1: "BeefQueefMod.bin",
+            gtaBQ2: "BeefQueefMod134.bin",
+            gtaBQ3: "BeefQueefMod138.bin",
+            gtalts: "gtavLTS127.bin",
+            gtamb: "gtavmb127.bin",
+            gtava0: "gtava0.bin",
+            gtava1: "gtava1.bin",
+            gtava2: "gtava2.bin",
+            gtava3: "gtava3.bin",
+            rdr21: "Oysters1.00.bin",
+            rdr22: "Oysters1.13.bin",
+            rdr23: "Oysters1.19.bin",
+            rdr24: "Oysters1.24.bin",
+            rdr25: "Oysters1.29.bin",
+            wilde32: "WildeModz-1.32.bin",
+            wilde33: "WildeModz-1.33.bin",
+            wilde38: "WildeModz-1.38.bin",
+            toDexEnable: "todex-enable.bin",
+            toDexDisable: "todex-disable.bin",
+            webRTE: "WebRTE.bin",
+         };
+
+         function getPayload(payload, onLoadEndCallback) {
+            const req = new XMLHttpRequest();
+            req.open("GET", payload);
+            req.responseType = "arraybuffer";
+            req.onload = (event) => onLoadEndCallback && onLoadEndCallback(req, event);
+            req.send();
+         }
+
+         function sendPayload(url, data, onLoadEndCallback) {
+            const req = new XMLHttpRequest();
+            req.open("POST", url, true);
+            req.onload = (event) => onLoadEndCallback && onLoadEndCallback(req, event);
+            req.send(data);
+         }
+
+         function loadPayload(file) {
+            const statusUrl = "http://127.0.0.1:9090/status";
+            const payloadUrl = "http://127.0.0.1:9090";
+            const req = new XMLHttpRequest();
+            req.open("POST", statusUrl);
+            req.onerror = () => alert("Cannot Load Payload Because The BinLoader Server Is Not Running");
+            req.onload = () => {
+               const responseJson = JSON.parse(req.responseText);
+               if (responseJson.status === "ready") {
+                  getPayload(file, (req) => {
+                     if ((req.status === 200 || req.status === 304) && req.response) {
+                        sendPayload(payloadUrl, req.response, (req) => {
+                           progress.innerHTML = req.status === 200 ? "Payload Loaded" : "Cannot send payload";
+                        });
+                     }
+                  });
+               } else {
+                  alert("Cannot Load Payload Because The BinLoader Server Is Busy");
+               }
+            };
+            req.send();
+         }
+
+         function loadFanControl() {
+            progress.innerHTML = "Fan Control loading... please wait";
+            loadPayload(`fan${tempC.value}.bin`);
+         }
+
+         function showMenu(menu) {
+            all.style.display = "none";
+            Dumpers.style.display = "none";
+            Tools.style.display = "none";
+            gtav.style.display = "none";
+            rdr2.style.display = "none";
+            menu.style.display = "block";
+         }
+
+         function backToMainMenu() {
+            all.style.display = "block";
+            Dumpers.style.display = "none";
+            Tools.style.display = "none";
+            gtav.style.display = "none";
+            rdr2.style.display = "none";
+         }
+
+         function setTemperatureOptions() {
+            const select = document.getElementById("tempC");
+            for (let i = 50; i <= 80; i += 5) {
+               const option = document.createElement("option");
+               option.text = i;
+               option.value = i;
+               select.add(option);
+            }
+            select.value = 60;
+            localStorage.setItem("fanthreshold", select.value);
+         }
+
+         document.addEventListener("DOMContentLoaded", setTemperatureOptions);
+      </script>
+   </head>
+
+   <body>
+      <div class="container">
+         <h1>PPPwn-Luckfox GoldHEN Host - 9.00</h1>
+         <h2 id="progress" style="color: blue;">Status</h2>
+         <div id="all">
+            <button class="button" onmouseover="progress.innerHTML='WebRTE for PS4 9.00 fw'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles.webRTE)">
+               WebRTE
+            </button>
+            <button class="button" onmouseover="progress.innerHTML='ps4debug for PS4 9.00 fw'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles.ps4debug)">
+               PS4Debug
+            </button>
+            <button class="button" onmouseover="progress.innerHTML='Orbis Toolbox Loader Alfa 1190 for PS4 9.00 fw'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles.orbis)">
+               Orbis Toolbox
+            </button>
+            <button class="button" onmouseover="progress.innerHTML='A full access FTP server for the PS4'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles.ftp)">
+               FTP
+            </button>
+            <br />
+            <br />
+            <button class="button" onmouseover="progress.innerHTML='Move installed games to an external USB drive'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles.app2usb)">
+               App2USB
+            </button>
+            <button class="button" onmouseover="progress.innerHTML='Unlocks some debug features available on testkit'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles.toDexEnable)">
+               ToDex Enable
+            </button>
+            <button class="button" onmouseover="progress.innerHTML='Disable ToDEX'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles.toDexDisable)">
+               ToDex Disable
+            </button>
+            <button class="button" onmouseover="progress.innerHTML='Creates dummy files in the PS4 update folder'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles.disableUpdates)">
+               Disable Updates
+            </button>
+            <br />
+            <br />
+            <button class="button" onmouseover="progress.innerHTML='Removes the dummy files in the PS4 update folder'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles.enableUpdates)">
+               Enable Updates
+            </button>
+            <button class="button" onmouseover="progress.innerHTML='Disable the auto opening of the last page used in the PS4 WebBrowser'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles.historyBlocker)">
+               History Blocker
+            </button>
+            <button class="button" onmouseover="progress.innerHTML='Enable Browser'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles.enableBrowser)">
+               Enable Browser
+            </button>
+            <br />
+            <br />
+            <button class="button" onmouseover="progress.innerHTML='All Dumper payloads'" onmouseout="progress.innerHTML='Status'" onclick="showMenu(Dumpers)">
+               Dumper Group
+            </button>
+            <button class="button" onmouseover="progress.innerHTML='All GTAV Mods'" onmouseout="progress.innerHTML='Status'" onclick="showMenu(gtav)">
+               GTAV Mods
+            </button>
+            <button class="button" onmouseover="progress.innerHTML='All RDR2 Mods'" onmouseout="progress.innerHTML='Status'" onclick="showMenu(rdr2)">
+               RDR Mods
+            </button>
+            <button class="button" onmouseover="progress.innerHTML='PS4 Tools payloads'" onmouseout="progress.innerHTML='Status'" onclick="showMenu(Tools)">
+               PS4 Tools
+            </button>
+         </div>
+         <div id="Dumpers" style="display: none;">
+            <button class="button" onmouseover="progress.innerHTML='Original Payload by xvortex PS4 9.00 fw'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles.dumperU)">
+               Dumper U
+            </button>
+            <button class="button" onmouseover="progress.innerHTML='Original Payload by xvortex + Modular Dumper by Storm21 PS4 9.00 fw'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles.dumperMGU)">
+               Dumper MGU
+            </button>
+            <button class="button" onmouseover="progress.innerHTML='PS4 System File Dumper by Ludvikus1 PS4 9.00 fw'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles.dumperSGU)">
+               Dumper SGU
+            </button>
+            <br />
+            <br />
+            <button class="button" onmouseover="progress.innerHTML='PS4 Kernel Dumper by zecoxao PS4 9.00 fw'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles.kernelDumper)">
+               Kernel Dumper
+            </button>
+            <button class="button" onmouseover="progress.innerHTML='PS4 Module Dumper by Golden PS4 9.00 fw'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles.moduleDumper)">
+               Module Dumper
+            </button>
+            <br />
+            <br />
+            <button class="button" onmouseover="progress.innerHTML='Move back to main menu'" onmouseout="progress.innerHTML='Status'" onclick="backToMainMenu()">
+               Back
+            </button>
+         </div>
+         <div id="Tools" style="display: none;">
+            <button class="button" onmouseover="progress.innerHTML='Disable Address Space Layout Randomization by pearlxcore PS4 9.00 fw'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles.disableASLR)">
+               Disable ASLR
+            </button>
+            <button class="button" onmouseover="progress.innerHTML='Enable UART for PS4 9.00 fw'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles.permanentuart)">
+               Permanent UART
+            </button>
+            <button class="button" onmouseover="progress.innerHTML='Exit IDU mode on PS4 9.00 fw'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles.exitIDU)">
+               Exit IDU
+            </button>
+            <button class="button" onmouseover="progress.innerHTML='RIF Renamer by pearlxcore PS4 9.00 fw'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles.rifRenamer)">
+               RIF Renamer
+            </button>
+            <br />
+            <br />
+            <button class="button" onmouseover="progress.innerHTML='Move back to main menu'" onmouseout="progress.innerHTML='Status'" onclick="backToMainMenu()">
+               Back
+            </button>
+         </div>
+         <div id="gtav" style="display: none;">
+            <button class="button" onmouseover="progress.innerHTML='GTAV ArabicGuy 1.00 for 900 L1+R1'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles.gtava0)">
+               GTA ArabicGuy 1
+            </button>
+            <button class="button" onmouseover="progress.innerHTML='GTAV ArabicGuy 1.27 for 900 ==> + []'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles.gtava1)">
+               GTA ArabicGuy 2
+            </button>
+            <button class="button" onmouseover="progress.innerHTML='GTAV ArabicGuy 1.32 for 900'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles.gtava2)">
+               ArabicGuy 3
+            </button>
+            <button class="button" onmouseover="progress.innerHTML='GTAV ArabicGuy 1.33 for 900'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles.gtava3)">
+               ArabicGuy 4
+            </button>
+            <br />
+            <br />
+            <button class="button" onmouseover="progress.innerHTML='GTAV Expulsion Mode Menu 1.35 by LushModz for 900'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles.expul1)">
+               LushModz 1
+            </button>
+            <button class="button" onmouseover="progress.innerHTML='GTAV Expulsion Mode Menu 1.38 by LushModz for 900'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles.expul2)">
+               LushModz 2
+            </button>
+            <button class="button" onmouseover="progress.innerHTML='GTAV Menu-Base 1.27 for 900 ==> + []'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles.gtamb)">
+               MenuBase
+            </button>
+            <button class="button" onmouseover="progress.innerHTML='GTAV LTS 1.27 for 900 ==> + []'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles.gtalts)">
+               LTS
+            </button>
+            <br />
+            <br />
+            <button class="button" onmouseover="progress.innerHTML='GTA BeefQueef Mod 1.33 by Lush Modz for GTA V 9.00 fw'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles.gtaBQ1)">
+               BeefQueef 1
+            </button>
+            <button class="button" onmouseover="progress.innerHTML='GTA BeefQueef Mod 1.34 by Lush Modz for GTA V 9.00 fw'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles.gtaBQ2)">
+               BeefQueef 2
+            </button>
+            <button class="button" onmouseover="progress.innerHTML='GTA BeefQueef Mod 1.38 by Lush Modz for GTA V 9.00 fw'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles.gtaBQ3)">
+               BeefQueef 3
+            </button>
+            <br />
+            <br />
+            <button class="button" onmouseover="progress.innerHTML='GTA V 1.38 Lamance 9.00 fw'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles.gtaLamance)">
+               Lamance
+            </button>
+            <button class="button" onmouseover="progress.innerHTML='Wilde Modz 1.32 by Lush Modz for GTA V 9.00 fw'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles.wilde32)">
+               WildeModz 1
+            </button>
+            <button class="button" onmouseover="progress.innerHTML='Wilde Modz 1.33 by Lush Modz for GTA V 9.00 fw'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles.wilde33)">
+               WildeModz 2
+            </button>
+            <button class="button" onmouseover="progress.innerHTML='Wilde Modz 1.38 by Lush Modz for GTA V 9.00 fw'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles.wilde38)">
+               WildeModz 3
+            </button>
+            <br />
+            <br />
+            <button class="button" onmouseover="progress.innerHTML='Move back to main menu'" onmouseout="progress.innerHTML='Status'" onclick="backToMainMenu()">
+               Back
+            </button>
+         </div>
+         <div id="rdr2" style="display: none;">
+            <button class="button" onmouseover="progress.innerHTML='Red dead redemption 2 mod  menu 1.00 V1.3.6 by RF0oDxM0Dz (R1 + Square) '" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles.rdr21)">
+               RDR2 1
+            </button>
+            <button class="button" onmouseover="progress.innerHTML='Red dead redemption 2 mod  menu 1.13 V1.3.6 by RF0oDxM0Dz (R1 + Square) '" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles.rdr22)">
+               RDR2 2
+            </button>
+            <button class="button" onmouseover="progress.innerHTML='Red dead redemption 2 mod  menu 1.19 V1.3.6 by RF0oDxM0Dz (R1 + Square) '" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles.rdr23)">
+               RDR2 3
+            </button>
+            <button class="button" onmouseover="progress.innerHTML='Red dead redemption 2 mod  menu 1.24 V1.3.6 by RF0oDxM0Dz (R1 + Square) '" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles.rdr24)">
+               RDR2 4
+            </button>
+            <button class="button" onmouseover="progress.innerHTML='Red dead redemption 2 mod  menu 1.29 V1.3.6 by RF0oDxM0Dz (R1 + Square) '" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles.rdr25)">
+               RDR2 5
+            </button>
+            <br />
+            <br />
+            <button class="button" onmouseover="progress.innerHTML='Move back to main menu'" onmouseout="progress.innerHTML='Status'" onclick="backToMainMenu()">
+               Back
+            </button>
+         </div>
+      </div>
+   </body>
+</html>
