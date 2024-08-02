@@ -52,7 +52,7 @@ fi
 
 # Set up the web directory
 sudo mkdir -p $WEB_DIR
-sudo cp $CURRENT_DIR/web/* $WEB_DIR/
+sudo cp -r $CURRENT_DIR/web/* $WEB_DIR/
 
 #Give password less suod access to www-data user
 sudo sed -i "/www-data    ALL=(ALL) NOPASSWD: ALL/d" /etc/sudoers
