@@ -51,7 +51,7 @@ An alternative method to [0x1iii1ii/PPPwn-Luckfox](https://github.com/0x1iii1ii/
 ## Configuration
 
 ### Web Interface
-The web interface is available at `http://<your-device-ip>/`.
+The web interface is available at `http://<your-device-ip>/` and `http://10.1.1.1/` on PS4 using PPPoE connection.
 - `index.php`: Web-UI dashboard.
 - `config.php`: Allows you to configure PPPwn.
 - `900/index.html`: Hosts PS4 fw 9.00 payloads.
