@@ -43,4 +43,4 @@ fi
 
 # Start PPPoE server
 echo "pppwn executed successfully, starting PPPoE server..."
-sudo bash $DIR/pppoe.sh
+sudo systemctl start pppoe.service

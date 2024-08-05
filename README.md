@@ -2,10 +2,11 @@
 An alternative method to [0x1iii1ii/PPPwn-Luckfox](https://github.com/0x1iii1ii/PPPwn-Luckfox) running PPPwn on Luckfox Pico Plus/Pro/Max with additional features.
 
 ## Features
-- Hosts a web interface for configuring PPPwn and hosting payloads.
+- Hosts a web interface for configuring PPPwn, running pppwn and hosting payloads.
 - Starts a PPPoE server to assign IP addresses to PS4.
 - Supports PS4 firmware versions 9.00, 9.03, 9.04, 9.50, 9.51, 9.60, 10.00, 10.01, 10.50, 10.70, 10.71 & 11.00.
-- Supports both HEN and GoldHEN, can be configured via web interface.
+- Supports both HEN and GoldHEN, can be configured via config page.
+- Supports auto run on boot can be turned on/off via config page (Note: It's off by default)
 
 ## Prerequisites
 - Luckfox Pico device
@@ -15,12 +16,13 @@ An alternative method to [0x1iii1ii/PPPwn-Luckfox](https://github.com/0x1iii1ii/
 - PC (for flashing OS onto the SD card)
 
 ## Downloads
-   ### Ubuntu Image 
+   ### Custom Ubuntu Image for Luckfox
    Luckfox Model  | Ubuntu Image
    ------------- | -------------
    Luckfox Pico Pro/Max  | [download](https://github.com/harsha-0110/PPPwn-Luckfox/releases/download/v1.0/Luckfox.pico.pro-max.img.rar)
    Luckfox Pico Plus | [download](https://github.com/harsha-0110/PPPwn-Luckfox/releases/download/v1.0/Luckfox.pico.plus.img.rar)
 
+   ### SocToolKit for flashing Ubuntu image into SD card
    - SocToolKit [download](https://files.luckfox.com/wiki/Luckfox-Pico/Software/SocToolKit.zip)
 
 ## Installation
@@ -41,7 +43,8 @@ An alternative method to [0x1iii1ii/PPPwn-Luckfox](https://github.com/0x1iii1ii/
    sudo apt install git
    sudo git clone https://github.com/harsha-0110/PPPwn-Luckfox.git
    cd PPPwn-Luckfox
-   sudo chmod +x install.sh
+   sudo chmod +x install-dep.sh install.sh
+   sudo ./install-dep.sh
    sudo ./install.sh
    ```
 
@@ -51,6 +54,8 @@ An alternative method to [0x1iii1ii/PPPwn-Luckfox](https://github.com/0x1iii1ii/
 The web interface is available at `http://<your-device-ip>/`.
 - `index.php`: Web-UI dashboard.
 - `config.php`: Allows you to configure PPPwn.
+- `900/index.html`: Hosts PS4 fw 9.00 payloads.
+- `1100/index.html`: Hosts PS4 fw 11.00 payloads.
 
 ### Manual Configuration
 You can manually edit the configuration file located at `/etc/pppwn/config.json`.
