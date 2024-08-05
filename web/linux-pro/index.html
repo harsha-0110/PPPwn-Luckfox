@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PS4 Pro Linux Payloads</title>
+    <style>
+         body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: black;
+        }
+        .container {
+            max-width: 1000px;
+            padding: 40px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h1 {
+            font-size: 32px;
+            color: #333;
+        }
+        .button {
+            display: inline-block;
+            margin: 5px;
+            width: 200px;
+            padding: 10px 15px;
+            font-size: 18px;
+            color: #fff;
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background 0.3s, transform 0.2s;
+            cursor: pointer;
+        }
+        .button:hover {
+            background: linear-gradient(135deg, #0056b3, #004099);
+            transform: translateY(-2px);
+        }
+        .button:active {
+            transform: translateY(1px);
+        }
+    </style>
+    <script>
+        const payloadFiles = {
+            '900-1GB': 'payload-900.bin',
+            '900-2GB': 'payload-900-2gb.bin',
+            '900-3GB': 'payload-900-3gb.bin',
+            '900-4GB': 'payload-900-4gb.bin',
+            '903-1GB': 'payload-903.bin',
+            '903-2GB': 'payload-903-2gb.bin',
+            '903-3GB': 'payload-903-3gb.bin',
+            '903-4GB': 'payload-903-4gb.bin',
+            '950-1GB': 'payload-950.bin',
+            '950-2GB': 'payload-950-2gb.bin',
+            '950-3GB': 'payload-950-3gb.bin',
+            '950-4GB': 'payload-950-4gb.bin',
+            '1000-1GB': 'payload-1000.bin',
+            '1000-2GB': 'payload-1000-2gb.bin',
+            '1000-3GB': 'payload-1000-3gb.bin',
+            '1000-4GB': 'payload-1000-4gb.bin',
+            '1050-1GB': 'payload-1050.bin',
+            '1050-2GB': 'payload-1050-2gb.bin',
+            '1050-3GB': 'payload-1050-3gb.bin',
+            '1050-4GB': 'payload-1050-4gb.bin',
+            '1100-1GB': 'payload-1100.bin',
+            '1100-2GB': 'payload-1100-2gb.bin',
+            '1100-3GB': 'payload-1100-3gb.bin',
+            '1100-4GB': 'payload-1100-4gb.bin'
+        };
+
+        function getPayload(payload, onLoadEndCallback) {
+            const req = new XMLHttpRequest();
+            req.open('GET', payload);
+            req.responseType = "arraybuffer";
+            req.onload = event => onLoadEndCallback && onLoadEndCallback(req, event);
+            req.send();
+        }
+
+        function sendPayload(url, data, onLoadEndCallback) {
+            const req = new XMLHttpRequest();
+            req.open("POST", url, true);
+            req.onload = event => onLoadEndCallback && onLoadEndCallback(req, event);
+            req.send(data);
+        }
+
+        function loadPayload(file) {
+            const statusUrl = "http://127.0.0.1:9090/status";
+            const payloadUrl = "http://127.0.0.1:9090";
+            const req = new XMLHttpRequest();
+            req.open("POST", statusUrl);
+            req.onerror = () => alert("Cannot Load Payload Because The BinLoader Server Is Not Running");
+            req.onload = () => {
+                const responseJson = JSON.parse(req.responseText);
+                if (responseJson.status === "ready") {
+                    getPayload(file, req => {
+                        if ((req.status === 200 || req.status === 304) && req.response) {
+                            sendPayload(payloadUrl, req.response, req => {
+                                progress.innerHTML = req.status === 200 ? "Payload Loaded" : 'Cannot send payload';
+                            });
+                        }
+                    });
+                } else {
+                    alert("Cannot Load Payload Because The BinLoader Server Is Busy");
+                }
+            };
+            req.send();
+        }
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <h1>PS4 Pro Linux Payloads</h1>
+        <h2 id="progress" style="color: blue;">Status</h2>
+        <div id="all">
+            <button class="button" onmouseover="progress.innerHTML='900 Pro Linux Loader1GB VRAM'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles['900-1GB'])">900 Linux 1GB</button>
+            <button class="button" onmouseover="progress.innerHTML='900 Pro Linux Loader2GB VRAM'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles['900-2GB'])">900 Linux 2GB</button>
+            <button class="button" onmouseover="progress.innerHTML='900 Pro Linux Loader3GB VRAM'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles['900-3GB'])">900 Linux 3GB</button>
+            <button class="button" onmouseover="progress.innerHTML='900 Pro Linux Loader4GB VRAM'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles['900-4GB'])">900 Linux 4GB</button>
+            <button class="button" onmouseover="progress.innerHTML='903 Pro Linux Loader1GB VRAM'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles['903-1GB'])">903 Linux 1GB</button>
+            <button class="button" onmouseover="progress.innerHTML='903 Pro Linux Loader2GB VRAM'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles['903-2GB'])">903 Linux 2GB</button>
+            <button class="button" onmouseover="progress.innerHTML='903 Pro Linux Loader3GB VRAM'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles['903-3GB'])">903 Linux 3GB</button>
+            <button class="button" onmouseover="progress.innerHTML='903 Pro Linux Loader4GB VRAM'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles['903-4GB'])">903 Linux 4GB</button>
+            <button class="button" onmouseover="progress.innerHTML='950 Pro Linux Loader1GB VRAM'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles['950-1GB'])">950 Linux 1GB</button>
+            <button class="button" onmouseover="progress.innerHTML='950 Pro Linux Loader2GB VRAM'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles['950-2GB'])">950 Linux 2GB</button>
+            <button class="button" onmouseover="progress.innerHTML='950 Pro Linux Loader3GB VRAM'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles['950-3GB'])">950 Linux 3GB</button>
+            <button class="button" onmouseover="progress.innerHTML='950 Pro Linux Loader4GB VRAM'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles['950-4GB'])">950 Linux 4GB</button>
+            <button class="button" onmouseover="progress.innerHTML='1000 Pro Linux Loader1GB VRAM'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles['1000-1GB'])">1000 Linux 1GB</button>
+            <button class="button" onmouseover="progress.innerHTML='1000 Pro Linux Loader2GB VRAM'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles['1000-2GB'])">1000 Linux 2GB</button>
+            <button class="button" onmouseover="progress.innerHTML='1000 Pro Linux Loader3GB VRAM'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles['1000-3GB'])">1000 Linux 3GB</button>
+            <button class="button" onmouseover="progress.innerHTML='1000 Pro Linux Loader4GB VRAM'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles['1000-4GB'])">1000 Linux 4GB</button>
+            <button class="button" onmouseover="progress.innerHTML='1050 Pro Linux Loader1GB VRAM'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles['1050-1GB'])">1050 Linux 1GB</button>
+            <button class="button" onmouseover="progress.innerHTML='1050 Pro Linux Loader2GB VRAM'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles['1050-2GB'])">1050 Linux 2GB</button>
+            <button class="button" onmouseover="progress.innerHTML='1050 Pro Linux Loader3GB VRAM'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles['1050-3GB'])">1050 Linux 3GB</button>
+            <button class="button" onmouseover="progress.innerHTML='1050 Pro Linux Loader4GB VRAM'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles['1050-4GB'])">1050 Linux 4GB</button>
+            <button class="button" onmouseover="progress.innerHTML='1100 Pro Linux Loader1GB VRAM'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles['1100-1GB'])">1100 Linux 1GB</button>
+            <button class="button" onmouseover="progress.innerHTML='1100 Pro Linux Loader2GB VRAM'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles['1100-2GB'])">1100 Linux 2GB</button>
+            <button class="button" onmouseover="progress.innerHTML='1100 Pro Linux Loader3GB VRAM'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles['1100-3GB'])">1100 Linux 3GB</button>
+            <button class="button" onmouseover="progress.innerHTML='1100 Pro Linux Loader4GB VRAM'" onmouseout="progress.innerHTML='Status'" onclick="loadPayload(payloadFiles['1100-4GB'])">1100 Linux 4GB</button>
+            <br><br>
+            <button class="button" onclick="window.location.href = '../'" onmouseover="progress.innerHTML='Move back to PPPwn-Dashboard'" onmouseout="progress.innerHTML='Status'">Back</button>
+        </div>
+    </div>
+</body>
+
+</html>
