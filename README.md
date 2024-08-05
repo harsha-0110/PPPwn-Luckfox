@@ -71,6 +71,7 @@ To update the project with the latest changes from the repository:
 
 1. Run the update script:
    ```sh
+   cd PPPwn-Luckfox
    sudo ./update.sh
    ```
 
