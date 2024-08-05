@@ -16,7 +16,7 @@
             background-color: black;
         }
         .container {
-            max-width: 600px;
+            max-width: 800px;
             padding: 40px;
             background-color: #fff;
             border-radius: 12px;
@@ -69,6 +69,8 @@
     <a href="config.php" class="button">Config</a>
     <a href="./900/index.html" class="button">900 Payloads</a>
     <a href="./1100/index.html" class="button">1100 Payloads</a>
+    <a href="./linux/index.html" class="button">PS4 Linux Payloads</a>
+    <a href="./linux-pro/index.html" class="button">PS4 Pro Linux Payloads</a>
     <?php
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['run_pppwn'])) {
         // Read config.json to get the installation directory
