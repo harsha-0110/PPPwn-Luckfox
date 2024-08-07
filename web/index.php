@@ -80,7 +80,7 @@
             if (isset($config_data['install_dir'])) {
                 // Execute the run.sh script from the installation directory
                 $installation_dir = $config_data['install_dir'];
-                $output = shell_exec("sudo bash $installation_dir/web-run.sh");
+                $output = shell_exec("$installation_dir/web-run.sh");
             } else {
                 echo "<div class='output'><h2>Error:</h2><p>Installation directory not found or invalid.</p></div>";
             }

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Define the path to the configuration file
 CONFIG_FILE="/etc/pppwn/config.json"
@@ -28,19 +28,19 @@ CMD="$DIR/pppwn --interface eth0 --fw $FW_VERSION --stage1 $STAGE1_PAYLOAD --sta
 [ "$WAIT_AFTER_PIN" != "null" ] && CMD+=" --wait-after-pin $WAIT_AFTER_PIN"
 [ "$GROOM_DELAY" != "null" ] && CMD+=" --groom-delay $GROOM_DELAY"
 [ "$BUFFER_SIZE" != "null" ] && CMD+=" --buffer-size $BUFFER_SIZE"
-[ "$AUTO_RETRY" == "true" ] && CMD+=" --auto-retry"
-[ "$NO_WAIT_PADI" == "true" ] && CMD+=" --no-wait-padi"
-[ "$REAL_SLEEP" == "true" ] && CMD+=" --real-sleep"
+[ "$AUTO_RETRY" = "true" ] && CMD+=" --auto-retry"
+[ "$NO_WAIT_PADI" = "true" ] && CMD+=" --no-wait-padi"
+[ "$REAL_SLEEP" = "true" ] && CMD+=" --real-sleep"
 
 #PPPwn Execution
 if [ "$AUTO_START" = "true" ]; then
     #Stop pppoe server
-    sudo killall pppoe-server
+    killall pppoe-server
     $CMD
 else
     echo "Auto Start is disabled, Skipping PPPwn..."
 fi
 
 # Start PPPoE server
-echo "pppwn executed successfully, starting PPPoE server..."
-sudo systemctl start pppoe.service
+echo "Starting PPPoE server..."
+pppoe-server -I eth0 -T 60 -N 1 -C isp -S isp -L 10.1.1.1 -R 10.1.1.2 -F &
