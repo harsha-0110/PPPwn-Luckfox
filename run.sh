@@ -74,7 +74,7 @@ monitor_config() {
             update_config "$WEB_RUN" false
             halt -f
         fi
-
+        chmod 777 $CONFIG_FILE
         sleep 2
     done
 }
