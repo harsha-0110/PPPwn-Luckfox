@@ -76,7 +76,7 @@
         <a href="./linux-pro/index.html" class="button">PS4 Pro Linux Payloads</a>
         <?php
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $baseLockDir = '/var/lock/pppwn/';
+            $baseLockDir = '/tmp/';
             $webRunLockFile = $baseLockDir . 'web_run.lock';
             $shutdownLockFile = $baseLockDir . 'shutdown.lock';
             
