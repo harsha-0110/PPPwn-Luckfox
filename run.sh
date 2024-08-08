@@ -2,6 +2,7 @@
 
 # Define the path to the configuration file
 CONFIG_FILE="/etc/pppwn/config.json"
+chmod 777 $CONFIG_FILE
 
 # Read configuration values
 
