@@ -32,8 +32,6 @@ if [ ! -f "$CONFIG_FILE" ]; then
     "NO_WAIT_PADI": true,
     "REAL_SLEEP": false,
     "AUTO_START": false,
-    "WEB_RUN": false,
-    "SHUTDOWN": false,
     "install_dir": "$CURRENT_DIR"
 }
 EOL

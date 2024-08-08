@@ -2,7 +2,6 @@
 
 # Define the path to the configuration file
 CONFIG_FILE="/etc/pppwn/config.json"
-chmod 777 $CONFIG_FILE
 
 # Read configuration values
 
@@ -58,23 +57,46 @@ update_config() {
     jq --argjson web_run "$1" --argjson shutdown "$2" '.WEB_RUN = $web_run | .SHUTDOWN = $shutdown' $CONFIG_FILE > /tmp/config.json && mv /tmp/config.json $CONFIG_FILE
 }
 
-# Function to monitor and handle WEB_RUN and SHUTDOWN
+BASE_LOCK_DIR="/var/lock/pppwn"
+WEB_RUN_LOCK_FILE="$BASE_LOCK_DIR/web_run.lock"
+SHUTDOWN_LOCK_FILE="$BASE_LOCK_DIR/shutdown.lock"
+DIR="/path/to/scripts"
+
+# Ensure the lock directory exists
+mkdir -p "$BASE_LOCK_DIR"
+
+# Function to update lock files
+update_locks() {
+    local web_run="$1"
+    local shutdown="$2"
+
+    if [ "$web_run" = "true" ]; then
+        touch "$WEB_RUN_LOCK_FILE"
+    else
+        [ -f "$WEB_RUN_LOCK_FILE" ] && rm "$WEB_RUN_LOCK_FILE"
+    fi
+
+    if [ "$shutdown" = "true" ]; then
+        touch "$SHUTDOWN_LOCK_FILE"
+    else
+        [ -f "$SHUTDOWN_LOCK_FILE" ] && rm "$SHUTDOWN_LOCK_FILE"
+    fi
+}
+
 monitor_config() {
     while true; do
-        read_config
-
-        if [ "$WEB_RUN" = "true" ]; then
-            echo "WEB_RUN is true, executing web-run.sh..."
-            update_config false "$SHUTDOWN"
+        if [ -f "$WEB_RUN_LOCK_FILE" ]; then
+            echo "WEB_RUN lock file detected, executing web-run.sh..."
+            update_locks false false
             $DIR/web-run.sh
         fi
 
-        if [ "$SHUTDOWN" = "true" ]; then
-            echo "SHUTDOWN is true, halting the system..."
-            update_config "$WEB_RUN" false
+        if [ -f "$SHUTDOWN_LOCK_FILE" ]; then
+            echo "SHUTDOWN lock file detected, halting the system..."
+            update_locks false false
             halt -f
         fi
-        chmod 777 $CONFIG_FILE
+        
         sleep 2
     done
 }

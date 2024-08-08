@@ -76,24 +76,31 @@
         <a href="./linux-pro/index.html" class="button">PS4 Pro Linux Payloads</a>
         <?php
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $config_file = '/etc/pppwn/config.json';
-            if (file_exists($config_file)) {
-                $config_data = json_decode(file_get_contents($config_file), true);
-                if (isset($_POST['run_pppwn'])) {
-                        // Set WEB_RUN to true
-                        $config_data['WEB_RUN'] = true;
-                        file_put_contents($config_file, json_encode($config_data, JSON_PRETTY_PRINT));
-                        echo "<div class='output'><p>Starting PPPwn...</p></div>";
-                    }
+            $baseLockDir = '/var/lock/pppwn/';
+            $webRunLockFile = $baseLockDir . 'web_run.lock';
+            $shutdownLockFile = $baseLockDir . 'shutdown.lock';
+            
+            // Create the lock directory if it doesn't exist
+            if (!is_dir($baseLockDir)) {
+                mkdir($baseLockDir, 0777, true);
+            }
 
-                    if (isset($_POST['shutdown'])) {
-                        // Set SHUTDOWN to true
-                        $config_data['SHUTDOWN'] = true;
-                        file_put_contents($config_file, json_encode($config_data, JSON_PRETTY_PRINT));
-                        echo "<div class='output'><p>Powering off LuckFox...</p></div>";
-                    }
-            } else {
-                echo "<div class='output'><h2>Error:</h2><p>Configuration file not found.</p></div>";
+            if (isset($_POST['run_pppwn'])) {
+                // Create the web_run lock file
+                if (file_put_contents($webRunLockFile, 'locked') !== false) {
+                    echo "<div class='output'><p>Starting PPPwn...</p></div>";
+                } else {
+                    echo "<div class='output'><h2>Error:</h2><p>Unable to create web_run lock file.</p></div>";
+                }
+            }
+
+            if (isset($_POST['shutdown'])) {
+                // Create the shutdown lock file
+                if (file_put_contents($shutdownLockFile, 'locked') !== false) {
+                    echo "<div class='output'><p>Powering off LuckFox...</p></div>";
+                } else {
+                    echo "<div class='output'><h2>Error:</h2><p>Unable to create shutdown lock file.</p></div>";
+                }
             }
         }
         ?>
