@@ -32,6 +32,8 @@ if [ ! -f "$CONFIG_FILE" ]; then
     "NO_WAIT_PADI": true,
     "REAL_SLEEP": false,
     "AUTO_START": false,
+    "WEB_RUN": false,
+    "SHUTDOWN": false,
     "install_dir": "$CURRENT_DIR"
 }
 EOL
@@ -93,8 +95,6 @@ EOL
 # Create PPPwn service
 cp ./run.sh /etc/init.d/S99pppwn-service
 chmod +x /etc/init.d/S99pppwn-service
-
-
 
 # Set up pppoe configuration
 cp $CURRENT_DIR/pppoe/pppoe-server-options /etc/ppp/

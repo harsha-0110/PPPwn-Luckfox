@@ -62,33 +62,41 @@
 <body>
 
 <div class="container">
-    <h1>PPPwn-Luckfox Dashboard</h1>
-    <form method="post" action="" style="display:inline;">
-        <button type="submit" name="run_pppwn" class="button">Run PPPwn</button>
-    </form>
-    <a href="config.php" class="button">Config</a>
-    <a href="./900/index.html" class="button">900 Payloads</a>
-    <a href="./1100/index.html" class="button">1100 Payloads</a>
-    <a href="./linux/index.html" class="button">PS4 Linux Payloads</a>
-    <a href="./linux-pro/index.html" class="button">PS4 Pro Linux Payloads</a>
-    <?php
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['run_pppwn'])) {
-        // Read config.json to get the installation directory
-        $config_file = '/etc/pppwn/config.json';
-        if (file_exists($config_file)) {
-            $config_data = json_decode(file_get_contents($config_file), true);
-            if (isset($config_data['install_dir'])) {
-                // Execute the run.sh script from the installation directory
-                $installation_dir = $config_data['install_dir'];
-                $output = shell_exec("$installation_dir/web-run.sh");
+        <h1>PPPwn-Luckfox Dashboard</h1>
+        <form method="post" action="" style="display:inline;">
+            <button type="submit" name="run_pppwn" class="button">Run PPPwn</button>
+        </form>
+        <form method="post" action="" style="display:inline;">
+            <button type="submit" name="shutdown" class="button">Shutdown</button>
+        </form>
+        <a href="config.php" class="button">Config</a>
+        <a href="./900/index.html" class="button">900 Payloads</a>
+        <a href="./1100/index.html" class="button">1100 Payloads</a>
+        <a href="./linux/index.html" class="button">PS4 Linux Payloads</a>
+        <a href="./linux-pro/index.html" class="button">PS4 Pro Linux Payloads</a>
+        <?php
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $config_file = '/etc/pppwn/config.json';
+            if (file_exists($config_file)) {
+                $config_data = json_decode(file_get_contents($config_file), true);
+                if (isset($_POST['run_pppwn'])) {
+                        // Set WEB_RUN to true
+                        $config_data['WEB_RUN'] = true;
+                        file_put_contents($config_file, json_encode($config_data, JSON_PRETTY_PRINT));
+                        echo "<div class='output'><p>Starting PPPwn...</p></div>";
+                    }
+
+                    if (isset($_POST['shutdown'])) {
+                        // Set SHUTDOWN to true
+                        $config_data['SHUTDOWN'] = true;
+                        file_put_contents($config_file, json_encode($config_data, JSON_PRETTY_PRINT));
+                        echo "<div class='output'><p>Powering off LuckFox...</p></div>";
+                    }
             } else {
-                echo "<div class='output'><h2>Error:</h2><p>Installation directory not found or invalid.</p></div>";
+                echo "<div class='output'><h2>Error:</h2><p>Configuration file not found.</p></div>";
             }
-        } else {
-            echo "<div class='output'><h2>Error:</h2><p>Configuration file not found.</p></div>";
         }
-    }
-    ?>
-</div>
+        ?>
+    </div>
 </body>
 </html>
