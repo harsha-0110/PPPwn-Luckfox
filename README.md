@@ -114,7 +114,7 @@ To update the project with the latest changes from the repository:
 ## Notes
 - This repo is a work in progress and may contain bugs.
 - Tested on Luckfox Pico Pro.
-- Installation takes about 25-30 minutes on pro model may take longer on plus model.
+- Ubuntu Installation takes about 10-15 minutes on pro model may take longer on plus model.
 
 ## Future Plans
 - Make pre-built images with PPPwn-Luckfox setup to make installation easier and faster.
