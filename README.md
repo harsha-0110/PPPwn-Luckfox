@@ -17,7 +17,7 @@ An alternative method to [0x1iii1ii/PPPwn-Luckfox](https://github.com/0x1iii1ii/
 - PC (for setup and flashing OS onto the SD card)
 
 ## Downloads
-   ### Custom Ubuntu Image for Luckfox
+   ### Custom Buildroot/Ubuntu Image for PPPwn-Luckfox
    Luckfox Model | Buildroot NAND Image | Buildroot SD Image | Ubuntu Image
    ------------- | ------------- | ------------- | -------------
    Luckfox Pico Pro/Max | [download](https://github.com/harsha-0110/PPPwn-Luckfox/releases/download/v1.1/Buildroot-NAND-Pro-Max.rar) | [download](https://github.com/harsha-0110/PPPwn-Luckfox/releases/download/v1.1/Buildroot-SD-Pro-Max.rar) | [download](https://github.com/harsha-0110/PPPwn-Luckfox/releases/download/v1.0/Luckfox.pico.pro-max.img.rar)
@@ -117,7 +117,8 @@ To update the project with the latest changes from the repository:
 - Ubuntu Installation takes about 10-15 minutes on pro model may take longer on plus model.
 
 ## Future Plans
-- Make pre-built images with PPPwn-Luckfox setup to make installation easier and faster.
+- USB emulation support on Buildroot.
+- Compressed payloads on web-host.
 
 ## Contributing
 Feel free to submit issues or pull requests for improvements and bug fixes.
