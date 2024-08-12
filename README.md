@@ -38,15 +38,17 @@ An alternative method to [0x1iii1ii/PPPwn-Luckfox](https://github.com/0x1iii1ii/
 
 3. Skip this step if you are installing on the NAND. After flashing the OS, eject the SD card and insert it into the Luckfox.
 
-4. On your PC open `Control Panel -> Network and Internet -> Network and Sharing Center -> Change Adapter Options`. You will find `Remote NDIS based Internet Sharing Device`. Right-click and choose Properties.
+4. Now connect Luckfox device to PC via Type-C cable.
 
-5. Double-click on `Internet Protocol Version 4 (TCP/IPv4)`. Set the IPv4 address to `172.32.0.100` and subnet mask to `255.255.0.0` and click OK.
+5. On your PC open `Control Panel -> Network and Internet -> Network and Sharing Center -> Change Adapter Options`. You will find `Remote NDIS based Internet Sharing Device`. Right-click and choose Properties.
 
-6. Open MobaXterm, choose Session->SSH, and enter the IP address of Luckfox pico as `172.32.0.93` and click OK, enter login `root` and password `luckfox`. 
+6. Double-click on `Internet Protocol Version 4 (TCP/IPv4)`. Set the IPv4 address to `172.32.0.100` and click on subnet mask and click OK.
 
-7. Download this repo, unzip and rename folder to `PPPwn-Luckfox` drag and drop the files into `/root` in the Mobaxterm SSH browser(SSH files viewer).
+7. Open MobaXterm, choose Session->SSH, and enter the IP address of Luckfox pico as `172.32.0.93` and click OK, enter login `root` and password `luckfox`. 
 
-8. Run the following commands in SSH:
+8. Download this repo, unzip and rename folder to `PPPwn-Luckfox` drag and drop the files into `/root` in the Mobaxterm SSH browser(SSH files viewer).
+
+9. Run the following commands in SSH:
    ```sh
    cd PPPwn-Luckfox
    chmod +x install.sh
