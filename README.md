@@ -21,7 +21,7 @@ An alternative method to [0x1iii1ii/PPPwn-Luckfox](https://github.com/0x1iii1ii/
    Luckfox Model | Buildroot NAND Image | Buildroot SD Image | Ubuntu Image
    ------------- | ------------- | ------------- | -------------
    Luckfox Pico Pro/Max | [download](https://github.com/harsha-0110/PPPwn-Luckfox/releases/download/v1.1/Buildroot-NAND-Pro-Max.rar) | [download](https://github.com/harsha-0110/PPPwn-Luckfox/releases/download/v1.1/Buildroot-SD-Pro-Max.rar) | [download](https://github.com/harsha-0110/PPPwn-Luckfox/releases/download/v1.0/Luckfox.pico.pro-max.img.rar)
-   Luckfox Pico Plus | - | [download](https://github.com/harsha-0110/PPPwn-Luckfox/releases/download/v1.1/Buildroot-SD-Plus.rar) | [download](https://github.com/harsha-0110/PPPwn-Luckfox/releases/download/v1.0/Luckfox.pico.plus.img.rar)
+   Luckfox Pico Plus | [download](https://github.com/harsha-0110/PPPwn-Luckfox/releases/download/v1.1/Buildroot-NAND-Plus.rar) | [download](https://github.com/harsha-0110/PPPwn-Luckfox/releases/download/v1.1/Buildroot-SD-Plus.rar) | [download](https://github.com/harsha-0110/PPPwn-Luckfox/releases/download/v1.0/Luckfox.pico.plus.img.rar)
 
    ### SocToolKit for flashing image into SD card
    - SocToolKit [download](https://files.luckfox.com/wiki/Luckfox-Pico/Software/SocToolKit.zip)
