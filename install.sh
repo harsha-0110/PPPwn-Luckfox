@@ -25,7 +25,7 @@ if [ ! -f "$CONFIG_FILE" ]; then
     "FW_VERSION": "1100",
     "HEN_TYPE": "goldhen",
     "TIMEOUT": "5",
-    "WAIT_AFTER_PIN": "2",
+    "WAIT_AFTER_PIN": "5",
     "GROOM_DELAY": "4",
     "BUFFER_SIZE": "0",
     "AUTO_RETRY": true,
