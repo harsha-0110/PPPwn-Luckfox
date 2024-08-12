@@ -1,9 +1,10 @@
-#!/bin/bash
+#!/bin/sh
 
 # Define the path to the configuration file
 CONFIG_FILE="/etc/pppwn/config.json"
 
-# Read configuration values from config.json
+# Read configuration values
+
 FW_VERSION=$(jq -r '.FW_VERSION' $CONFIG_FILE)
 HEN_TYPE=$(jq -r '.HEN_TYPE' $CONFIG_FILE)
 TIMEOUT=$(jq -r '.TIMEOUT' $CONFIG_FILE)
@@ -24,23 +25,59 @@ STAGE2_PAYLOAD="$DIR/stage2/${HEN_TYPE}/${FW_VERSION}/stage2.bin"
 CMD="$DIR/pppwn --interface eth0 --fw $FW_VERSION --stage1 $STAGE1_PAYLOAD --stage2 $STAGE2_PAYLOAD"
 
 # Append optional parameters
-[ "$TIMEOUT" != "null" ] && CMD+=" --timeout $TIMEOUT"
-[ "$WAIT_AFTER_PIN" != "null" ] && CMD+=" --wait-after-pin $WAIT_AFTER_PIN"
-[ "$GROOM_DELAY" != "null" ] && CMD+=" --groom-delay $GROOM_DELAY"
-[ "$BUFFER_SIZE" != "null" ] && CMD+=" --buffer-size $BUFFER_SIZE"
-[ "$AUTO_RETRY" == "true" ] && CMD+=" --auto-retry"
-[ "$NO_WAIT_PADI" == "true" ] && CMD+=" --no-wait-padi"
-[ "$REAL_SLEEP" == "true" ] && CMD+=" --real-sleep"
+[ "$TIMEOUT" != "null" ] && CMD="$CMD --timeout $TIMEOUT"
+[ "$WAIT_AFTER_PIN" != "null" ] && CMD="$CMD --wait-after-pin $WAIT_AFTER_PIN"
+[ "$GROOM_DELAY" != "null" ] && CMD="$CMD --groom-delay $GROOM_DELAY"
+[ "$BUFFER_SIZE" != "null" ] && CMD="$CMD --buffer-size $BUFFER_SIZE"
+[ "$AUTO_RETRY" == "true" ] && CMD="$CMD --auto-retry"
+[ "$NO_WAIT_PADI" == "true" ] && CMD="$CMD --no-wait-padi"
+[ "$REAL_SLEEP" == "true" ] && CMD="$CMD --real-sleep"
 
 #PPPwn Execution
 if [ "$AUTO_START" = "true" ]; then
     #Stop pppoe server
-    sudo killall pppoe-server
+    killall pppoe-server
     $CMD
 else
     echo "Auto Start is disabled, Skipping PPPwn..."
 fi
 
 # Start PPPoE server
-echo "pppwn executed successfully, starting PPPoE server..."
-sudo systemctl start pppoe.service
+echo "Starting PPPoE server..."
+pppoe-server -I eth0 -T 60 -N 1 -C isp -S isp -L 10.1.1.1 -R 10.1.1.2 -F &
+
+# Function to read configuration values
+read_config() {
+    WEB_RUN=$(jq -r '.WEB_RUN' $CONFIG_FILE)
+    SHUTDOWN=$(jq -r '.SHUTDOWN' $CONFIG_FILE)
+}
+
+# Function to update configuration values
+update_config() {
+    jq --argjson web_run "$1" --argjson shutdown "$2" '.WEB_RUN = $web_run | .SHUTDOWN = $shutdown' $CONFIG_FILE > /tmp/config.json && mv /tmp/config.json $CONFIG_FILE
+}
+
+BASE_LOCK_DIR="/tmp"
+WEB_RUN_LOCK_FILE="$BASE_LOCK_DIR/web_run.lock"
+SHUTDOWN_LOCK_FILE="$BASE_LOCK_DIR/shutdown.lock"
+
+monitor_config() {
+    while true; do
+        if [ -f "$WEB_RUN_LOCK_FILE" ]; then
+            echo "WEB_RUN lock file detected, executing web-run.sh..."
+            rm "$WEB_RUN_LOCK_FILE"
+            $DIR/web-run.sh
+        fi
+
+        if [ -f "$SHUTDOWN_LOCK_FILE" ]; then
+            echo "SHUTDOWN lock file detected, halting the system..."
+            rm "$SHUTDOWN_LOCK_FILE"
+            halt -f
+        fi
+        
+        sleep 2
+    done
+}
+
+# Start monitoring in the background
+monitor_config &

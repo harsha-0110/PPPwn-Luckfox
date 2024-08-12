@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Define the path to the configuration file
 CONFIG_FILE="/etc/pppwn/config.json"
@@ -23,20 +23,20 @@ STAGE2_PAYLOAD="$DIR/stage2/${HEN_TYPE}/${FW_VERSION}/stage2.bin"
 CMD="$DIR/pppwn --interface eth0 --fw $FW_VERSION --stage1 $STAGE1_PAYLOAD --stage2 $STAGE2_PAYLOAD"
 
 # Append optional parameters
-[ "$TIMEOUT" != "null" ] && CMD+=" --timeout $TIMEOUT"
-[ "$WAIT_AFTER_PIN" != "null" ] && CMD+=" --wait-after-pin $WAIT_AFTER_PIN"
-[ "$GROOM_DELAY" != "null" ] && CMD+=" --groom-delay $GROOM_DELAY"
-[ "$BUFFER_SIZE" != "null" ] && CMD+=" --buffer-size $BUFFER_SIZE"
-[ "$AUTO_RETRY" == "true" ] && CMD+=" --auto-retry"
-[ "$NO_WAIT_PADI" == "true" ] && CMD+=" --no-wait-padi"
-[ "$REAL_SLEEP" == "true" ] && CMD+=" --real-sleep"
+[ "$TIMEOUT" != "null" ] && CMD="$CMD --timeout $TIMEOUT"
+[ "$WAIT_AFTER_PIN" != "null" ] && CMD="$CMD --wait-after-pin $WAIT_AFTER_PIN"
+[ "$GROOM_DELAY" != "null" ] && CMD="$CMD --groom-delay $GROOM_DELAY"
+[ "$BUFFER_SIZE" != "null" ] && CMD="$CMD --buffer-size $BUFFER_SIZE"
+[ "$AUTO_RETRY" == "true" ] && CMD="$CMD --auto-retry"
+[ "$NO_WAIT_PADI" == "true" ] && CMD="$CMD --no-wait-padi"
+[ "$REAL_SLEEP" == "true" ] && CMD="$CMD --real-sleep"
 
 #Stop pppoe server
-sudo killall pppoe-server
+killall pppoe-server
 
 # Execute the command
 $CMD
 
 # Start PPPoE server
-echo "pppwn executed successfully, starting PPPoE server..."
-sudo systemctl start pppoe.service
+echo "Starting PPPoE server..."
+pppoe-server -I eth0 -T 60 -N 1 -C isp -S isp -L 10.1.1.1 -R 10.1.1.2 -F &
