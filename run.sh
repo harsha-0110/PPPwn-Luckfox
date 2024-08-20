@@ -33,10 +33,19 @@ CMD="$DIR/pppwn --interface eth0 --fw $FW_VERSION --stage1 $STAGE1_PAYLOAD --sta
 [ "$NO_WAIT_PADI" == "true" ] && CMD="$CMD --no-wait-padi"
 [ "$REAL_SLEEP" == "true" ] && CMD="$CMD --real-sleep"
 
+# Reset the interface eth0
+reset_interface() {
+    ifconfig eth0 down
+    sleep 1
+    ifconfig eth0 up
+    sleep 1
+}
+
 #PPPwn Execution
 if [ "$AUTO_START" = "true" ]; then
     #Stop pppoe server
     killall pppoe-server
+    reset_interface
     $CMD
 else
     echo "Auto Start is disabled, Skipping PPPwn..."
@@ -44,13 +53,14 @@ fi
 
 # Start PPPoE server
 echo "Starting PPPoE server..."
-pppoe-server -I eth0 -T 60 -N 1 -C isp -S isp -L 10.1.1.1 -R 10.1.1.2 -F &
+reset_interface
+pppoe-server -I eth0 -T 60 -N 1 -C isp -S isp -L 10.1.1.1 -R 10.1.1.2 &
 
-BASE_LOCK_DIR="/tmp"
-WEB_RUN_LOCK_FILE="$BASE_LOCK_DIR/web_run.lock"
-SHUTDOWN_LOCK_FILE="$BASE_LOCK_DIR/shutdown.lock"
+# Lockfile locations
+WEB_RUN_LOCK_FILE="/tmp/web_run.lock"
+SHUTDOWN_LOCK_FILE="/tmp/shutdown.lock"
 
-monitor_config() {
+monitor_lockfile() {
     while true; do
         if [ -f "$WEB_RUN_LOCK_FILE" ]; then
             echo "WEB_RUN lock file detected, executing web-run.sh..."
@@ -63,10 +73,9 @@ monitor_config() {
             rm "$SHUTDOWN_LOCK_FILE"
             halt -f
         fi
-        
         sleep 2
     done
 }
 
 # Start monitoring in the background
-monitor_config &
+monitor_lockfile &

@@ -53,7 +53,7 @@ cat <<EOL > /etc/nginx/nginx.conf
 worker_processes  1;
 
 events {
-    worker_connections  1024;
+    worker_connections  128;
 }
 
 http {

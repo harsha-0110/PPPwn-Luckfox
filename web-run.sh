@@ -31,12 +31,22 @@ CMD="$DIR/pppwn --interface eth0 --fw $FW_VERSION --stage1 $STAGE1_PAYLOAD --sta
 [ "$NO_WAIT_PADI" == "true" ] && CMD="$CMD --no-wait-padi"
 [ "$REAL_SLEEP" == "true" ] && CMD="$CMD --real-sleep"
 
+# Reset the interface eth0
+reset_interface() {
+    ifconfig eth0 down
+    sleep 1
+    ifconfig eth0 up
+    sleep 1
+}
+
 #Stop pppoe server
 killall pppoe-server
+reset_interface
 
 # Execute the command
 $CMD
 
 # Start PPPoE server
 echo "Starting PPPoE server..."
-pppoe-server -I eth0 -T 60 -N 1 -C isp -S isp -L 10.1.1.1 -R 10.1.1.2 -F &
+reset_interface
+pppoe-server -I eth0 -T 60 -N 1 -C isp -S isp -L 10.1.1.1 -R 10.1.1.2 &
