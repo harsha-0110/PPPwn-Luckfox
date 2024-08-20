@@ -77,14 +77,22 @@ An alternative method to [0x1iii1ii/PPPwn-Luckfox](https://github.com/0x1iii1ii/
    sudo ./install.sh
    ```
 
-## Configuration
-
-### Web Interface
+## Web Interface Features
 The web interface is available at `http://<your-device-ip>/` and `http://10.1.1.1/` on PS4 using PPPoE connection.
 - `index.php`: Web-UI dashboard.
+- `Run PPPwn`: This button in the dashboard allows you to start PPPwn execution from the browser.
+- `Shutdown`: This button in the dashboard allows you to turn-off the Luckfox device from the browser.
+- `eth0 off`: This button in the dashboard allows you to turn-off the Luckfox's ethernet port from the browser.
 - `config.php`: Allows you to configure PPPwn.
 - `900/index.html`: Hosts PS4 fw 9.00 payloads.
 - `1100/index.html`: Hosts PS4 fw 11.00 payloads.
+- `all/index.html`: Hosts PS4 payloads that work on all fw upto 11.50.
+- `linux/index.html`: Hosts Linux payloads for PS4 phat and slim.
+- `linux-pro/index.html`: Hosts Linux payloads for PS4 pro.
+
+## Configuration
+### Web Interface
+The Config page is available at `http://<your-device-ip>/config.php` and `http://10.1.1.1/config.php` on PS4 using PPPoE connection
 
 ### Manual Configuration
 You can manually edit the configuration file located at `/etc/pppwn/config.json`.
@@ -117,10 +125,6 @@ To update the project with the latest changes from the repository:
 - This repo is a work in progress and may contain bugs.
 - Tested on Luckfox Pico Pro.
 - Ubuntu Installation takes about 10-15 minutes on pro model may take longer on plus model.
-
-## Future Plans
-- USB emulation support on Buildroot.
-- Compressed payloads on web-host.
 
 ## Contributing
 Feel free to submit issues or pull requests for improvements and bug fixes.
