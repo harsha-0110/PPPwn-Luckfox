@@ -59,6 +59,7 @@ pppoe-server -I eth0 -T 60 -N 1 -C isp -S isp -L 10.1.1.1 -R 10.1.1.2 &
 # Lockfile locations
 WEB_RUN_LOCK_FILE="/tmp/web_run.lock"
 SHUTDOWN_LOCK_FILE="/tmp/shutdown.lock"
+ETHDOWN_LOCK_FILE="/tmp/eth_down.lock"
 
 monitor_lockfile() {
     while true; do
@@ -72,6 +73,13 @@ monitor_lockfile() {
             echo "SHUTDOWN lock file detected, halting the system..."
             rm "$SHUTDOWN_LOCK_FILE"
             halt -f
+        fi
+
+        if [ -f "$ETHDOWN_LOCK_FILE" ]; then
+            echo "ETHDOWN lock file detected, powering down eth0..."
+            rm "$ETHDOWN_LOCK_FILE"
+            killall pppoe-server
+            ifconfig eth0 down
         fi
         sleep 2
     done
