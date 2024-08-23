@@ -9,20 +9,33 @@ CONFIG_DIR="/etc/pppwn"
 CONFIG_FILE="$CONFIG_DIR/config.json"
 
 # Default configuration values
-DEFAULTS='{
+DEFAULT_CONFIG=$(cat <<EOF
+{
     "PPPWN": "pppwn2",
     "FW_VERSION": "1100",
     "HEN_TYPE": "goldhen",
     "TIMEOUT": "5",
-    "WAIT_AFTER_PIN": "5",
+    "WAIT_AFTER_PIN": "2",
     "GROOM_DELAY": "4",
     "BUFFER_SIZE": "0",
     "AUTO_RETRY": true,
     "NO_WAIT_PADI": true,
     "REAL_SLEEP": false,
     "AUTO_START": false,
-    "install_dir": "'$CURRENT_DIR'"
-}'
+    "install_dir": "$CURRENT_DIR"
+}
+EOF
+)
+
+# Function to check and add missing keys
+update_config() {
+    for key in $(echo "$DEFAULT_CONFIG" | jq -r 'keys[]'); do
+        if ! jq -e ".${key}" "$CONFIG_FILE" > /dev/null; then
+            value=$(echo "$DEFAULT_CONFIG" | jq ".${key}")
+            jq ".${key} = ${value}" "$CONFIG_FILE" > "$CONFIG_FILE.tmp" && mv "$CONFIG_FILE.tmp" "$CONFIG_FILE"
+        fi
+    done
+}
 
 # Change permissions of the following files
 chmod +x ./pppwn1
@@ -35,13 +48,12 @@ if [ ! -d "$CONFIG_DIR" ]; then
     mkdir -p $CONFIG_DIR
 fi
 
-# Check if config.json exists and update it with missing values
-if [ -f "$CONFIG_FILE" ]; then
-    # Merge existing config.json with defaults
-    jq -s '.[0] * .[1]' "$CONFIG_FILE" <(echo "$DEFAULTS") > "$CONFIG_FILE.tmp" && mv "$CONFIG_FILE.tmp" "$CONFIG_FILE"
+# Create or update the config.json file
+if [ ! -f "$CONFIG_FILE" ]; then
+    echo "$DEFAULT_CONFIG" | jq '.' > "$CONFIG_FILE"
+    chmod 777 $CONFIG_FILE
 else
-    # Create the config.json file with default values
-    echo "$DEFAULTS" > "$CONFIG_FILE"
+    update_config
     chmod 777 $CONFIG_FILE
 fi
 
@@ -60,7 +72,7 @@ cat <<EOL > /etc/nginx/nginx.conf
 worker_processes  1;
 
 events {
-    worker_connections  128;
+    worker_connections  1024;
 }
 
 http {
@@ -108,4 +120,3 @@ cp $CURRENT_DIR/pppoe/pap-secrets /etc/ppp/
 echo "Installation complete."
 
 reboot
-
