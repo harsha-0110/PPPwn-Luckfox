@@ -40,14 +40,18 @@ reset_interface() {
     sleep 1
 }
 
-#Stop pppoe server
+#Stop pppoe server, nginx, php-fpm
 killall pppoe-server
+killall nginx
+killall php-fpm
 reset_interface
 
 # Execute the command
 $CMD
 
-# Start PPPoE server
+# Start PPPoE server, nginx, php-fpm
 echo "Starting PPPoE server..."
 reset_interface
+/etc/init.d/S50nginx start
+/etc/init.d/S49php-fpm start
 pppoe-server -I eth0 -T 60 -N 1 -C isp -S isp -L 10.1.1.1 -R 10.1.1.2 &
