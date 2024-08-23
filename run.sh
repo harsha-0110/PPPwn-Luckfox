@@ -33,10 +33,19 @@ CMD="$DIR/$PPPWN --interface eth0 --fw $FW_VERSION --stage1 $STAGE1_PAYLOAD --st
 [ "$NO_WAIT_PADI" == "true" ] && CMD="$CMD --no-wait-padi"
 [ "$REAL_SLEEP" == "true" ] && CMD="$CMD --real-sleep"
 
+# Reset the interface eth0
+reset_interface() {
+    ifconfig eth0 down
+    sleep 1
+    ifconfig eth0 up
+    sleep 1
+}
+
 #PPPwn Execution
 if [ "$AUTO_START" = "true" ]; then
     #Stop pppoe server
     killall pppoe-server
+    reset_interface
     $CMD
 else
     echo "Auto Start is disabled, Skipping PPPwn..."
@@ -44,24 +53,15 @@ fi
 
 # Start PPPoE server
 echo "Starting PPPoE server..."
-pppoe-server -I eth0 -T 60 -N 1 -C isp -S isp -L 10.1.1.1 -R 10.1.1.2 -F &
+reset_interface
+pppoe-server -I eth0 -T 60 -N 1 -C isp -S isp -L 10.1.1.1 -R 10.1.1.2 &
 
-# Function to read configuration values
-read_config() {
-    WEB_RUN=$(jq -r '.WEB_RUN' $CONFIG_FILE)
-    SHUTDOWN=$(jq -r '.SHUTDOWN' $CONFIG_FILE)
-}
+# Lockfile locations
+WEB_RUN_LOCK_FILE="/tmp/web_run.lock"
+SHUTDOWN_LOCK_FILE="/tmp/shutdown.lock"
+ETHDOWN_LOCK_FILE="/tmp/eth_down.lock"
 
-# Function to update configuration values
-update_config() {
-    jq --argjson web_run "$1" --argjson shutdown "$2" '.WEB_RUN = $web_run | .SHUTDOWN = $shutdown' $CONFIG_FILE > /tmp/config.json && mv /tmp/config.json $CONFIG_FILE
-}
-
-BASE_LOCK_DIR="/tmp"
-WEB_RUN_LOCK_FILE="$BASE_LOCK_DIR/web_run.lock"
-SHUTDOWN_LOCK_FILE="$BASE_LOCK_DIR/shutdown.lock"
-
-monitor_config() {
+monitor_lockfile() {
     while true; do
         if [ -f "$WEB_RUN_LOCK_FILE" ]; then
             echo "WEB_RUN lock file detected, executing web-run.sh..."
@@ -74,10 +74,16 @@ monitor_config() {
             rm "$SHUTDOWN_LOCK_FILE"
             halt -f
         fi
-        
+
+        if [ -f "$ETHDOWN_LOCK_FILE" ]; then
+            echo "ETHDOWN lock file detected, powering down eth0..."
+            rm "$ETHDOWN_LOCK_FILE"
+            killall pppoe-server
+            ifconfig eth0 down
+        fi
         sleep 2
     done
 }
 
 # Start monitoring in the background
-monitor_config &
+monitor_lockfile &

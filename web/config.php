@@ -117,8 +117,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             font-size: 18px;
             font-weight: normal;
         }
-        input[type="submit"] {
+        input[type="submit"], button {
             padding: 15px;
+            min-width: 180px;
             border: none;
             border-radius: 8px;
             background: linear-gradient(135deg, #007bff, #0056b3);
@@ -128,9 +129,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             align-self: center;
             transition: background 0.3s;
         }
-        input[type="submit"]:hover {
+        input[type="submit"]:hover, button:hover {
             background: linear-gradient(135deg, #0056b3, #004099);
         }
+        .btn {
+          display: flex;
+          justify-content: center;
+          gap: 20px; /* Space between buttons */
+      }
     </style>
 </head>
 <body>
@@ -201,7 +207,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <input type="checkbox" id="AUTO_START" name="AUTO_START" <?php if ($config['AUTO_START']) echo 'checked'; ?>>
             <label for="AUTO_START">Auto Run on Start-Up</label>
         </div>
-        <input type="submit" value="Update Configuration">
+        <div class="btn">
+            <button type="button" onclick="window.location.href = '../'">Back</button>
+            <input type="submit" value="Update Configuration">
+        </div>
     </form>
 </div>
 

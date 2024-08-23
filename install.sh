@@ -14,7 +14,7 @@ DEFAULTS='{
     "FW_VERSION": "1100",
     "HEN_TYPE": "goldhen",
     "TIMEOUT": "5",
-    "WAIT_AFTER_PIN": "2",
+    "WAIT_AFTER_PIN": "5",
     "GROOM_DELAY": "4",
     "BUFFER_SIZE": "0",
     "AUTO_RETRY": true,
@@ -60,7 +60,7 @@ cat <<EOL > /etc/nginx/nginx.conf
 worker_processes  1;
 
 events {
-    worker_connections  1024;
+    worker_connections  128;
 }
 
 http {
