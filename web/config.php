@@ -26,6 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $fw_hen_version = explode('_', $_POST['FW_HEN_VERSION']);
         $config['FW_VERSION'] = $fw_hen_version[0];
         $config['HEN_TYPE'] = $fw_hen_version[1];
+        $config['PPPWN'] = $_POST['PPPWN'];
         $config['TIMEOUT'] = $_POST['TIMEOUT'];
         $config['WAIT_AFTER_PIN'] = $_POST['WAIT_AFTER_PIN'];
         $config['GROOM_DELAY'] = $_POST['GROOM_DELAY'];
@@ -161,6 +162,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <option value="1070_hen" <?php if ($config['FW_VERSION'] == '1070' && $config['HEN_TYPE'] == 'hen') echo 'selected'; ?>>10.70 - Hen</option>
             <option value="1071_hen" <?php if ($config['FW_VERSION'] == '1071' && $config['HEN_TYPE'] == 'hen') echo 'selected'; ?>>10.71 - Hen</option>
             <option value="1100_hen" <?php if ($config['FW_VERSION'] == '1100' && $config['HEN_TYPE'] == 'hen') echo 'selected'; ?>>11.00 - Hen</option>
+        </select>
+
+        <label for="PPPWN">PPPwn IPv6 verion:</label>
+        <select id="PPPWN" name="PPPWN" required>
+            <option value="pppwn1" <?php if ($config['PPPWN'] == 'pppwn1') echo 'selected'; ?>>PPPwn with old IPv6</option>
+            <option value="pppwn2" <?php if ($config['PPPWN'] == 'pppwn2') echo 'selected'; ?>>PPPwn with new IPv6</option>
         </select>
 
         <label for="TIMEOUT">Timeout in seconds:</label>

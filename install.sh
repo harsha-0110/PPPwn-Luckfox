@@ -8,20 +8,9 @@ PPPWN_SERVICE="/etc/init.d/pppwn"
 CONFIG_DIR="/etc/pppwn"
 CONFIG_FILE="$CONFIG_DIR/config.json"
 
-# Change permissions of the following files
-chmod +x ./pppwn
-chmod +x ./run.sh
-chmod +x ./web-run.sh
-
-# Create configuration directory if it doesn't exist
-if [ ! -d "$CONFIG_DIR" ]; then
-    mkdir -p $CONFIG_DIR
-fi
-
-# Create the config.json file with the install directory if it doesn't exist
-if [ ! -f "$CONFIG_FILE" ]; then
-    tee $CONFIG_FILE > /dev/null <<EOL
-{
+# Default configuration values
+DEFAULTS='{
+    "PPPWN": "pppwn2",
     "FW_VERSION": "1100",
     "HEN_TYPE": "goldhen",
     "TIMEOUT": "5",
@@ -32,9 +21,27 @@ if [ ! -f "$CONFIG_FILE" ]; then
     "NO_WAIT_PADI": true,
     "REAL_SLEEP": false,
     "AUTO_START": false,
-    "install_dir": "$CURRENT_DIR"
-}
-EOL
+    "install_dir": "'$CURRENT_DIR'"
+}'
+
+# Change permissions of the following files
+chmod +x ./pppwn1
+chmod +x ./pppwn2
+chmod +x ./run.sh
+chmod +x ./web-run.sh
+
+# Create configuration directory if it doesn't exist
+if [ ! -d "$CONFIG_DIR" ]; then
+    mkdir -p $CONFIG_DIR
+fi
+
+# Check if config.json exists and update it with missing values
+if [ -f "$CONFIG_FILE" ]; then
+    # Merge existing config.json with defaults
+    jq -s '.[0] * .[1]' "$CONFIG_FILE" <(echo "$DEFAULTS") > "$CONFIG_FILE.tmp" && mv "$CONFIG_FILE.tmp" "$CONFIG_FILE"
+else
+    # Create the config.json file with default values
+    echo "$DEFAULTS" > "$CONFIG_FILE"
     chmod 777 $CONFIG_FILE
 fi
 
@@ -101,3 +108,4 @@ cp $CURRENT_DIR/pppoe/pap-secrets /etc/ppp/
 echo "Installation complete."
 
 reboot
+

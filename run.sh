@@ -4,7 +4,7 @@
 CONFIG_FILE="/etc/pppwn/config.json"
 
 # Read configuration values
-
+PPPWN=$(jq -r '.PPPWN' $CONFIG_FILE)
 FW_VERSION=$(jq -r '.FW_VERSION' $CONFIG_FILE)
 HEN_TYPE=$(jq -r '.HEN_TYPE' $CONFIG_FILE)
 TIMEOUT=$(jq -r '.TIMEOUT' $CONFIG_FILE)
@@ -22,7 +22,7 @@ STAGE1_PAYLOAD="$DIR/stage1/${FW_VERSION}/stage1.bin"
 STAGE2_PAYLOAD="$DIR/stage2/${HEN_TYPE}/${FW_VERSION}/stage2.bin"
 
 # Run pppwn with the configuration values
-CMD="$DIR/pppwn --interface eth0 --fw $FW_VERSION --stage1 $STAGE1_PAYLOAD --stage2 $STAGE2_PAYLOAD"
+CMD="$DIR/$PPPWN --interface eth0 --fw $FW_VERSION --stage1 $STAGE1_PAYLOAD --stage2 $STAGE2_PAYLOAD"
 
 # Append optional parameters
 [ "$TIMEOUT" != "null" ] && CMD="$CMD --timeout $TIMEOUT"
