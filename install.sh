@@ -8,24 +8,14 @@ PPPWN_SERVICE="/etc/init.d/pppwn"
 CONFIG_DIR="/etc/pppwn"
 CONFIG_FILE="$CONFIG_DIR/config.json"
 
-# Change permissions of the following files
-chmod +x ./pppwn
-chmod +x ./run.sh
-chmod +x ./web-run.sh
-
-# Create configuration directory if it doesn't exist
-if [ ! -d "$CONFIG_DIR" ]; then
-    mkdir -p $CONFIG_DIR
-fi
-
-# Create the config.json file with the install directory if it doesn't exist
-if [ ! -f "$CONFIG_FILE" ]; then
-    tee $CONFIG_FILE > /dev/null <<EOL
+# Default configuration values
+DEFAULT_CONFIG=$(cat <<EOF
 {
+    "PPPWN": "pppwn2",
     "FW_VERSION": "1100",
     "HEN_TYPE": "goldhen",
     "TIMEOUT": "5",
-    "WAIT_AFTER_PIN": "5",
+    "WAIT_AFTER_PIN": "2",
     "GROOM_DELAY": "4",
     "BUFFER_SIZE": "0",
     "AUTO_RETRY": true,
@@ -34,7 +24,36 @@ if [ ! -f "$CONFIG_FILE" ]; then
     "AUTO_START": false,
     "install_dir": "$CURRENT_DIR"
 }
-EOL
+EOF
+)
+
+# Function to check and add missing keys
+update_config() {
+    for key in $(echo "$DEFAULT_CONFIG" | jq -r 'keys[]'); do
+        if ! jq -e ".${key}" "$CONFIG_FILE" > /dev/null; then
+            value=$(echo "$DEFAULT_CONFIG" | jq ".${key}")
+            jq ".${key} = ${value}" "$CONFIG_FILE" > "$CONFIG_FILE.tmp" && mv "$CONFIG_FILE.tmp" "$CONFIG_FILE"
+        fi
+    done
+}
+
+# Change permissions of the following files
+chmod +x ./pppwn1
+chmod +x ./pppwn2
+chmod +x ./run.sh
+chmod +x ./web-run.sh
+
+# Create configuration directory if it doesn't exist
+if [ ! -d "$CONFIG_DIR" ]; then
+    mkdir -p $CONFIG_DIR
+fi
+
+# Create or update the config.json file
+if [ ! -f "$CONFIG_FILE" ]; then
+    echo "$DEFAULT_CONFIG" | jq '.' > "$CONFIG_FILE"
+    chmod 777 $CONFIG_FILE
+else
+    update_config
     chmod 777 $CONFIG_FILE
 fi
 
@@ -53,7 +72,7 @@ cat <<EOL > /etc/nginx/nginx.conf
 worker_processes  1;
 
 events {
-    worker_connections  128;
+    worker_connections  1024;
 }
 
 http {

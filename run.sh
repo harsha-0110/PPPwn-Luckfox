@@ -4,7 +4,7 @@
 CONFIG_FILE="/etc/pppwn/config.json"
 
 # Read configuration values
-
+PPPWN=$(jq -r '.PPPWN' $CONFIG_FILE)
 FW_VERSION=$(jq -r '.FW_VERSION' $CONFIG_FILE)
 HEN_TYPE=$(jq -r '.HEN_TYPE' $CONFIG_FILE)
 TIMEOUT=$(jq -r '.TIMEOUT' $CONFIG_FILE)
@@ -22,7 +22,7 @@ STAGE1_PAYLOAD="$DIR/stage1/${FW_VERSION}/stage1.bin"
 STAGE2_PAYLOAD="$DIR/stage2/${HEN_TYPE}/${FW_VERSION}/stage2.bin"
 
 # Run pppwn with the configuration values
-CMD="$DIR/pppwn --interface eth0 --fw $FW_VERSION --stage1 $STAGE1_PAYLOAD --stage2 $STAGE2_PAYLOAD"
+CMD="$DIR/$PPPWN --interface eth0 --fw $FW_VERSION --stage1 $STAGE1_PAYLOAD --stage2 $STAGE2_PAYLOAD"
 
 # Append optional parameters
 [ "$TIMEOUT" != "null" ] && CMD="$CMD --timeout $TIMEOUT"
@@ -43,17 +43,21 @@ reset_interface() {
 
 #PPPwn Execution
 if [ "$AUTO_START" = "true" ]; then
-    #Stop pppoe server
+    #Stop pppoe server, nginx, php-fpm
     killall pppoe-server
+    killall nginx
+    killall php-fpm
     reset_interface
     $CMD
 else
     echo "Auto Start is disabled, Skipping PPPwn..."
 fi
 
-# Start PPPoE server
+# Start PPPoE server, nginx, php-fpm
 echo "Starting PPPoE server..."
 reset_interface
+/etc/init.d/S50nginx start
+/etc/init.d/S49php-fpm start
 pppoe-server -I eth0 -T 60 -N 1 -C isp -S isp -L 10.1.1.1 -R 10.1.1.2 &
 
 # Lockfile locations
