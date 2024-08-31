@@ -44,6 +44,7 @@ update_config() {
 # Change permissions of the following files
 chmod +x ./pppwn1
 chmod +x ./pppwn2
+chmod +x ./pppwn3
 chmod +x ./run.sh
 chmod +x ./web-run.sh
 
