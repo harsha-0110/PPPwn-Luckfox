@@ -22,6 +22,10 @@ DEFAULT_CONFIG=$(cat <<EOF
     "NO_WAIT_PADI": true,
     "REAL_SLEEP": false,
     "AUTO_START": false,
+    "SPRAY_NUM": "4096",
+    "PIN_NUM": "4096",
+    "CORRUPT_NUM": "1",
+    "OLD_IPv6": false,
     "install_dir": "$CURRENT_DIR"
 }
 EOF
