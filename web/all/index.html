@@ -49,6 +49,12 @@
         .button:active {
             transform: translateY(1px);
         }
+        #tempC{
+            font-size:22px;
+            text-align:center;
+            border-radius: 8px;
+            border: 3px solid #007bff;
+         }
     </style>
     <script>
         const payloadFiles = {
@@ -146,7 +152,12 @@
                }
             };
             req.send();
-        }
+         }
+
+         function loadFanControl() {
+            progress.innerHTML = "Fan Control loading... please wait";
+            injectPayload(`fan${tempC.value}.bin.bz2`);
+         }
     </script>
     <script>
         var bzip2 = {};
@@ -416,6 +427,8 @@
             <br/> <br/>
             <button class="button" onmouseover="progress.innerHTML='RIF Renamer for PS4 all fw upto 11.50'" onmouseout="progress.innerHTML='Status'" onclick="injectPayload(payloadFiles.rifRenamer)">RIF Renamer</button>
             <button class="button" onmouseover="progress.innerHTML='ToDex for PS4 all fw upto 11.50'" onmouseout="progress.innerHTML='Status'" onclick="injectPayload(payloadFiles.toDex)">ToDex</button>
+            <button class="button" onmouseover="progress.innerHTML='Set the temperature at the PS4 fan starts'" onmouseout="progress.innerHTML='Status'" onclick="injectPayload('fan' + tempC.value + '.bin.bz2')"> Fan Control </button>
+            <select id="tempC"></select>
             <br/> <br/>
             <button class="button" onclick="window.location.href = '../'" onmouseover="progress.innerHTML='Move back to PPPwn-Dashboard'" onmouseout="progress.innerHTML='Status'">Back</button>
         </div>
