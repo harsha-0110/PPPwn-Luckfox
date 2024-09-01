@@ -88,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             flex-direction: column;
             gap: 20px;
         }
-        label {
+        label, p {
             font-size: 18px;
             font-weight: bold;
             color: #555;
