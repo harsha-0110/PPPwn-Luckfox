@@ -174,11 +174,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <option value="1100_hen" <?php if ($config['FW_VERSION'] == '1100' && $config['HEN_TYPE'] == 'hen') echo 'selected'; ?>>11.00 - Hen</option>
         </select>
 
-        <label for="PPPWN">PPPwn IPv6 verion:</label>
+        <label for="PPPWN">Select PPPwn verion:</label>
         <select id="PPPWN" name="PPPWN" required>
             <option value="pppwn1" <?php if ($config['PPPWN'] == 'pppwn1') echo 'selected'; ?>>PPPwn with old IPv6</option>
             <option value="pppwn2" <?php if ($config['PPPWN'] == 'pppwn2') echo 'selected'; ?>>PPPwn with new IPv6</option>
-            <option value="pppwn3" <?php if ($config['PPPWN'] == 'pppwn3') echo 'selected'; ?>>PPPwn updated by n99dev</option>
+            <option value="pppwn3" <?php if ($config['PPPWN'] == 'pppwn3') echo 'selected'; ?>>PPPwn updated by nn9dev</option>
         </select>
 
         <label for="TIMEOUT">Timeout in seconds:</label>
@@ -213,7 +213,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <label for="AUTO_START">Auto Run on Start-Up</label>
         </div>
 
-        <p>n99dev PPPwn options (Only works with n99dev PPPwn):</p>
+        <p>nn9dev PPPwn options (Only works with nn9dev PPPwn):</p>
 
         <label for="SPRAY_NUM">Spray Number:</label>
         <input type="number" id="SPRAY_NUM" name="SPRAY_NUM" value="<?php echo htmlspecialchars($config['SPRAY_NUM']); ?>" required>

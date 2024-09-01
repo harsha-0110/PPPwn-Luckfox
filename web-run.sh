@@ -36,7 +36,7 @@ CMD="$DIR/$PPPWN --interface eth0 --fw $FW_VERSION --stage1 $STAGE1_PAYLOAD --st
 [ "$NO_WAIT_PADI" == "true" ] && CMD="$CMD --no-wait-padi"
 [ "$REAL_SLEEP" == "true" ] && CMD="$CMD --real-sleep"
 
-# Append optional n99dev parameters
+# Append optional nn9dev parameters
 if [ "$PPPWN" = "pppwn3" ]; then
     [ "$SPRAY_NUM" != "null" ] && CMD="$CMD --spray-num $SPRAY_NUM"
     [ "$PIN_NUM" != "null" ] && CMD="$CMD --pin-num $PIN_NUM"

@@ -55,6 +55,8 @@ An alternative method to [0x1iii1ii/PPPwn-Luckfox](https://github.com/0x1iii1ii/
    ./install.sh
    ```
 
+10. After Reboot you can visit `http://172.32.0.93/` using any browser to access the web-ui and modify the config.
+
 ### Ubuntu SD Installation
 1. Download the Ubuntu image for your respective Luckfox Pico Model, SocToolKit from above and extract them.
 
@@ -76,6 +78,8 @@ An alternative method to [0x1iii1ii/PPPwn-Luckfox](https://github.com/0x1iii1ii/
    sudo ./install-dep.sh
    sudo ./install.sh
    ```
+
+6. After Reboot you can visit `http://172.32.0.70/` using any browser to access the web-ui and modify the config.
 
 ## Web Interface Features
 The web interface is available at `http://<your-device-ip>/` and `http://10.1.1.1/` on PS4 using PPPoE connection.
@@ -137,6 +141,7 @@ Special Thanks to
 - [EchoStrech](https://github.com/EchoStretch) and [BestPig](https://x.com/BestPig) for HEN ports.
 - [0x1iii1ii](https://github.com/0x1iii1ii) for the inspiration for PPPwn-Luckfox.
 - [keschort](https://github.com/keschort) for the kernel config for Luckfox Pico.
+- [nn9dev](https://github.com/nn9dev) for the updated PPPwn_cpp with additional arguments.
 - And to all the Dev's in PS4 Scene.
 
 ## License
