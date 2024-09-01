@@ -22,6 +22,10 @@ DEFAULT_CONFIG=$(cat <<EOF
     "NO_WAIT_PADI": true,
     "REAL_SLEEP": false,
     "AUTO_START": false,
+    "SPRAY_NUM": "4096",
+    "PIN_NUM": "4096",
+    "CORRUPT_NUM": "1",
+    "OLD_IPv6": false,
     "install_dir": "$CURRENT_DIR"
 }
 EOF
@@ -40,6 +44,7 @@ update_config() {
 # Change permissions of the following files
 chmod +x ./pppwn1
 chmod +x ./pppwn2
+chmod +x ./pppwn3
 chmod +x ./run.sh
 chmod +x ./web-run.sh
 

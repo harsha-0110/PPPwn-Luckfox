@@ -14,6 +14,10 @@ BUFFER_SIZE=$(jq -r '.BUFFER_SIZE' $CONFIG_FILE)
 AUTO_RETRY=$(jq -r '.AUTO_RETRY' $CONFIG_FILE)
 NO_WAIT_PADI=$(jq -r '.NO_WAIT_PADI' $CONFIG_FILE)
 REAL_SLEEP=$(jq -r '.REAL_SLEEP' $CONFIG_FILE)
+SPRAY_NUM=$(jq -r '.SPRAY_NUM' $CONFIG_FILE)
+PIN_NUM=$(jq -r '.PIN_NUM' $CONFIG_FILE)
+CORRUPT_NUM=$(jq -r '.CORRUPT_NUM' $CONFIG_FILE)
+OLD_IPv6=$(jq -r '.OLD_IPv6' $CONFIG_FILE)
 DIR=$(jq -r '.install_dir' $CONFIG_FILE)
 
 # Define the paths to the stage1 and stage2 payloads based on FW_VERSION
@@ -31,6 +35,14 @@ CMD="$DIR/$PPPWN --interface eth0 --fw $FW_VERSION --stage1 $STAGE1_PAYLOAD --st
 [ "$AUTO_RETRY" == "true" ] && CMD="$CMD --auto-retry"
 [ "$NO_WAIT_PADI" == "true" ] && CMD="$CMD --no-wait-padi"
 [ "$REAL_SLEEP" == "true" ] && CMD="$CMD --real-sleep"
+
+# Append optional nn9dev parameters
+if [ "$PPPWN" = "pppwn3" ]; then
+    [ "$SPRAY_NUM" != "null" ] && CMD="$CMD --spray-num $SPRAY_NUM"
+    [ "$PIN_NUM" != "null" ] && CMD="$CMD --pin-num $PIN_NUM"
+    [ "$CORRUPT_NUM" != "null" ] && CMD="$CMD --corrupt-num $CORRUPT_NUM"
+    [ "$OLD_IPv6" == "true" ] && CMD="$CMD --use-old-ipv6"
+fi
 
 # Reset the interface eth0
 reset_interface() {

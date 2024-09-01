@@ -35,6 +35,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $config['NO_WAIT_PADI'] = isset($_POST['NO_WAIT_PADI']);
         $config['REAL_SLEEP'] = isset($_POST['REAL_SLEEP']);
         $config['AUTO_START'] = isset($_POST['AUTO_START']);
+        $config['SPRAY_NUM'] = $_POST['SPRAY_NUM'];
+        $config['PIN_NUM'] = $_POST['PIN_NUM'];
+        $config['CORRUPT_NUM'] = $_POST['CORRUPT_NUM'];
+        $config['OLD_IPv6'] = isset($_POST['OLD_IPv6']);
         save_config($config_file, $config);
         $message = "Configuration updated successfully.";
     } else {
@@ -84,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             flex-direction: column;
             gap: 20px;
         }
-        label {
+        label, p {
             font-size: 18px;
             font-weight: bold;
             color: #555;
@@ -170,10 +174,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <option value="1100_hen" <?php if ($config['FW_VERSION'] == '1100' && $config['HEN_TYPE'] == 'hen') echo 'selected'; ?>>11.00 - Hen</option>
         </select>
 
-        <label for="PPPWN">PPPwn IPv6 verion:</label>
+        <label for="PPPWN">Select PPPwn verion:</label>
         <select id="PPPWN" name="PPPWN" required>
             <option value="pppwn1" <?php if ($config['PPPWN'] == 'pppwn1') echo 'selected'; ?>>PPPwn with old IPv6</option>
             <option value="pppwn2" <?php if ($config['PPPWN'] == 'pppwn2') echo 'selected'; ?>>PPPwn with new IPv6</option>
+            <option value="pppwn3" <?php if ($config['PPPWN'] == 'pppwn3') echo 'selected'; ?>>PPPwn updated by nn9dev</option>
         </select>
 
         <label for="TIMEOUT">Timeout in seconds:</label>
@@ -207,10 +212,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <input type="checkbox" id="AUTO_START" name="AUTO_START" <?php if ($config['AUTO_START']) echo 'checked'; ?>>
             <label for="AUTO_START">Auto Run on Start-Up</label>
         </div>
+
+        <p>nn9dev PPPwn options (Only works with nn9dev PPPwn):</p>
+
+        <label for="SPRAY_NUM">Spray Number:</label>
+        <input type="number" id="SPRAY_NUM" name="SPRAY_NUM" value="<?php echo htmlspecialchars($config['SPRAY_NUM']); ?>" required>
+
+        <label for="PIN_NUM">Pin Number:</label>
+        <input type="number" id="PIN_NUM" name="PIN_NUM" value="<?php echo htmlspecialchars($config['PIN_NUM']); ?>" required>
+
+        <label for="CORRUPT_NUM">Corrupt Number:</label>
+        <input type="number" id="CORRUPT_NUM" name="CORRUPT_NUM" value="<?php echo htmlspecialchars($config['CORRUPT_NUM']); ?>" required>
+
+        <div class="checkbox-group">
+            <input type="checkbox" id="OLD_IPv6" name="OLD_IPv6" <?php if ($config['OLD_IPv6']) echo 'checked'; ?>>
+            <label for="OLD_IPv6">Use Old IPv6</label>
+        </div>
+
         <div class="btn">
             <button type="button" onclick="window.location.href = '../'">Back</button>
             <input type="submit" value="Update Configuration">
         </div>
+        
     </form>
 </div>
 
