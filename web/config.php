@@ -35,9 +35,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $config['NO_WAIT_PADI'] = isset($_POST['NO_WAIT_PADI']);
         $config['REAL_SLEEP'] = isset($_POST['REAL_SLEEP']);
         $config['AUTO_START'] = isset($_POST['AUTO_START']);
-        $config['SPRAY_NUM'] = isset($_POST['SPRAY_NUM']);
-        $config['PIN_NUM'] = isset($_POST['PIN_NUM']);
-        $config['CORRUPT_NUM'] = isset($_POST['CORRUPT_NUM']);
+        $config['SPRAY_NUM'] = $_POST['SPRAY_NUM'];
+        $config['PIN_NUM'] = $_POST['PIN_NUM'];
+        $config['CORRUPT_NUM'] = $_POST['CORRUPT_NUM'];
         $config['OLD_IPv6'] = isset($_POST['OLD_IPv6']);
         save_config($config_file, $config);
         $message = "Configuration updated successfully.";
