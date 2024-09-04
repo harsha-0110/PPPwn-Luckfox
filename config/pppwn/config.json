@@ -1,0 +1,17 @@
+{
+    "PPPWN": "pppwn2",
+    "FW_VERSION": "1100",
+    "HEN_TYPE": "goldhen",
+    "TIMEOUT": "5",
+    "WAIT_AFTER_PIN": "2",
+    "GROOM_DELAY": "4",
+    "BUFFER_SIZE": "0",
+    "AUTO_RETRY": true,
+    "NO_WAIT_PADI": true,
+    "REAL_SLEEP": false,
+    "AUTO_START": false,
+    "SPRAY_NUM": "4096",
+    "PIN_NUM": "4096",
+    "CORRUPT_NUM": "1",
+    "OLD_IPv6": false
+}
