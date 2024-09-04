@@ -44,7 +44,7 @@ An alternative method to [0x1iii1ii/PPPwn-Luckfox](https://github.com/0x1iii1ii/
 
 6. Double-click on `Internet Protocol Version 4 (TCP/IPv4)`. Set the IPv4 address to `172.32.0.100` and click on subnet mask and click OK.
 
-7. Open MobaXterm, choose Session->SSH, and enter the IP address of Luckfox pico as `172.32.0.93` and click OK, enter login `root` and password `luckfox`. 
+7. Open MobaXterm, choose Session->SSH, and enter the IP address of Luckfox pico as `172.32.0.93` and click OK, enter login `root` and password `luckfox`.
 
 8. Download this repo, unzip and rename folder to `PPPwn-Luckfox` drag and drop the files into `/root` in the Mobaxterm SSH browser(SSH files viewer).
 
@@ -99,7 +99,7 @@ The web interface is available at `http://<your-device-ip>/` and `http://10.1.1.
 The Config page is available at `http://<your-device-ip>/config.php` and `http://10.1.1.1/config.php` on PS4 using PPPoE connection
 
 ### Manual Configuration
-You can manually edit the configuration file located at `/etc/pppwn/config.json`.
+You can manually edit the configuration file located at `/etc/pppwn/config.ini`.
 
 ## Usage
 

@@ -56,7 +56,7 @@ kill_services() {
 execute_pppwn() {
 	stop
 	$CMD
-    restart_services
+	restart_services
 }
 
 start_services() {

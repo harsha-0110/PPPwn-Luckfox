@@ -6,7 +6,7 @@ $hen_versions = ["9.00", "9.03", "9.04", "9.50", "9.51", "9.60", "10.00", "10.01
 $pppwn_options = [
     "pppwn1" => "PPPwn with old IPv6",
     "pppwn2" => "PPPwn with new IPv6",
-    "pppwn3" => "PPPwssn updated by nn9dev"
+    "pppwn3" => "PPPwn updated by nn9dev"
 ];
 
 // Function to load configuration from the file
@@ -162,7 +162,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <input type="number" id="CORRUPT_NUM" name="CORRUPT_NUM" value="<?php echo htmlspecialchars($config['CORRUPT_NUM']); ?>" required>
 
         <div class="checkbox-group">
-            <input type="checkbox" id="OLD_IPv6" name="OLD_IPv6" <?php echo !empty($config['OLD_IPv6']) ? 'checked' : ''; ?>>
+            <input type="checkbox" id="OLD_IPv6" name="OLD_IPv6" <?php if ($config['OLD_IPv6']) echo 'checked'; ?>>
             <label for="OLD_IPv6">Use Old IPv6</label>
         </div>
 
