@@ -13,7 +13,7 @@ monitor_lockfile() {
         if [ -f "$WEB_RUN_LOCK_FILE" ]; then
             echo "WEB_RUN lock file detected, executing pppwn..."
             rm "$WEB_RUN_LOCK_FILE"
-            eval "${SERVICE} --pppwn-only"
+            eval "${SERVICE} pppwn"
         fi
 
         if [ -f "$SHUTDOWN_LOCK_FILE" ]; then
@@ -26,7 +26,7 @@ monitor_lockfile() {
             echo "ETHDOWN lock file detected, powering down eth0..."
             rm "$ETHDOWN_LOCK_FILE"
             killall pppoe-server
-            ifconfig eth0 down
+            ip link set eth0 down
         fi
         sleep 2
     done

@@ -1,120 +1,132 @@
 #!/bin/sh
 
+CONFIG_DIR="/etc/pppwn"
+WEB_MONITOR=$CONFIG_DIR/web_monitor.sh
+LOG_FILE="/var/log/pppwn.log"
+
 read_config() {
-    # Define the path to the configuration file
-    CONFIG_FILE="/etc/pppwn/config.json"
+	# Define the path to the configuration file
+	CONFIG_FILE="$CONFIG_DIR/config.ini"
 
-    # Read configuration values
-    PPPWN=$(jq -r '.PPPWN' $CONFIG_FILE)
-    FW_VERSION=$(jq -r '.FW_VERSION' $CONFIG_FILE)
-    HEN_TYPE=$(jq -r '.HEN_TYPE' $CONFIG_FILE)
-    TIMEOUT=$(jq -r '.TIMEOUT' $CONFIG_FILE)
-    WAIT_AFTER_PIN=$(jq -r '.WAIT_AFTER_PIN' $CONFIG_FILE)
-    GROOM_DELAY=$(jq -r '.GROOM_DELAY' $CONFIG_FILE)
-    BUFFER_SIZE=$(jq -r '.BUFFER_SIZE' $CONFIG_FILE)
-    AUTO_RETRY=$(jq -r '.AUTO_RETRY' $CONFIG_FILE)
-    NO_WAIT_PADI=$(jq -r '.NO_WAIT_PADI' $CONFIG_FILE)
-    REAL_SLEEP=$(jq -r '.REAL_SLEEP' $CONFIG_FILE)
-    AUTO_START=$(jq -r '.AUTO_START' $CONFIG_FILE)
-    SPRAY_NUM=$(jq -r '.SPRAY_NUM' $CONFIG_FILE)
-    PIN_NUM=$(jq -r '.PIN_NUM' $CONFIG_FILE)
-    CORRUPT_NUM=$(jq -r '.CORRUPT_NUM' $CONFIG_FILE)
-    OLD_IPv6=$(jq -r '.OLD_IPv6' $CONFIG_FILE)
-    DIR=$(jq -r '.install_dir' $CONFIG_FILE)
+	# Source the INI file
+	source "$CONFIG_FILE"
 
-    # Define the paths to the stage1 and stage2 payloads based on FW_VERSION
-    STAGE1_PAYLOAD="$DIR/stage1/${FW_VERSION}/stage1.bin"
-    STAGE2_PAYLOAD="$DIR/stage2/${HEN_TYPE}/${FW_VERSION}/stage2.bin"
+	# Define the paths to the stage1 and stage2 payloads based on FW_VERSION
+	STAGE1_PAYLOAD="$CONFIG_DIR/stage1/${FW_VERSION}/stage1.bin"
+	STAGE2_PAYLOAD="$CONFIG_DIR/stage2/${HEN_TYPE}/${FW_VERSION}/stage2.bin"
 
-    # Run pppwn with the configuration values
-    CMD="echo $DIR/$PPPWN --interface eth0 --fw $FW_VERSION --stage1 $STAGE1_PAYLOAD --stage2 $STAGE2_PAYLOAD"
+	# Run pppwn with the configuration values
+	CMD="$CONFIG_DIR/$PPPWN --interface eth0 --fw $FW_VERSION --stage1 $STAGE1_PAYLOAD --stage2 $STAGE2_PAYLOAD"
 
-    # Append optional parameters
-    [ "$TIMEOUT" != "null" ] && CMD="$CMD --timeout $TIMEOUT"
-    [ "$WAIT_AFTER_PIN" != "null" ] && CMD="$CMD --wait-after-pin $WAIT_AFTER_PIN"
-    [ "$GROOM_DELAY" != "null" ] && CMD="$CMD --groom-delay $GROOM_DELAY"
-    [ "$BUFFER_SIZE" != "null" ] && CMD="$CMD --buffer-size $BUFFER_SIZE"
-    [ "$AUTO_RETRY" == "true" ] && CMD="$CMD --auto-retry"
-    [ "$NO_WAIT_PADI" == "true" ] && CMD="$CMD --no-wait-padi"
-    [ "$REAL_SLEEP" == "true" ] && CMD="$CMD --real-sleep"
+	# Append optional parameters
+	[ "$TIMEOUT" != "" ] && CMD="$CMD --timeout $TIMEOUT"
+	[ "$WAIT_AFTER_PIN" != "" ] && CMD="$CMD --wait-after-pin $WAIT_AFTER_PIN"
+	[ "$GROOM_DELAY" != "" ] && CMD="$CMD --groom-delay $GROOM_DELAY"
+	[ "$BUFFER_SIZE" != "" ] && CMD="$CMD --buffer-size $BUFFER_SIZE"
+	[ "$AUTO_RETRY" == "true" ] && CMD="$CMD --auto-retry"
+	[ "$NO_WAIT_PADI" == "true" ] && CMD="$CMD --no-wait-padi"
+	[ "$REAL_SLEEP" == "true" ] && CMD="$CMD --real-sleep"
 
-    # Append optional nn9dev parameters
-    if [ "$PPPWN" = "pppwn3" ]; then
-        [ "$SPRAY_NUM" != "null" ] && CMD="$CMD --spray-num $SPRAY_NUM"
-        [ "$PIN_NUM" != "null" ] && CMD="$CMD --pin-num $PIN_NUM"
-        [ "$CORRUPT_NUM" != "null" ] && CMD="$CMD --corrupt-num $CORRUPT_NUM"
-        [ "$OLD_IPv6" == "true" ] && CMD="$CMD --use-old-ipv6"
-    fi
+	# Append optional nn9dev parameters
+	if [ "$PPPWN" = "pppwn3" ]; then
+		[ "$SPRAY_NUM" != "" ] && CMD="$CMD --spray-num $SPRAY_NUM"
+		[ "$PIN_NUM" != "" ] && CMD="$CMD --pin-num $PIN_NUM"
+		[ "$CORRUPT_NUM" != "" ] && CMD="$CMD --corrupt-num $CORRUPT_NUM"
+		[ "$OLD_IPv6" == "true" ] && CMD="$CMD --use-old-ipv6"
+	fi
 }
 
 # Reset the interface eth0
 reset_interface() {
-    echo "Resetting interface eth0..."
-    ifconfig eth0 down
-    sleep 1
-    ifconfig eth0 up
-    sleep 1
+	printf  "Resetting interface eth0... "
+	ip link set eth0 down
+	sleep 1
+	ip link set eth0 up
+	sleep 1
+	[ $? = 0 ] && echo "OK" || echo "FAIL"
 }
 
 kill_services() {
-    #Stop pppoe server, nginx, php-fpm
-    echo "Stopping services..."
-    killall -9 pppoe-server > /dev/null 2>&1
-    killall -9 php-fpm > /dev/null 2>&1
-    killall -9 nginx > /dev/null 2>&1
-    killall -9 pppwn1 > /dev/null 2>&1
-    killall -9 pppwn2 > /dev/null 2>&1
-    killall -9 pppwn3 > /dev/null 2>&1
+	#Stop pppoe server, nginx, php-fpm and any running pppwn
+	printf "Stopping services... "
+	SERVICE_PIDS=`pidof pppoe-server php-fpm nginx pppwn1 pppwn2 pppwn3`
+	[ "$SERVICE_PIDS" != "" ] && (kill -9 $SERVICE_PIDS && echo "OK" || echo "FAIL") || echo "NOT RUNNING"
 }
 
 execute_pppwn() {
-    kill_services
-    reset_interface
-    $CMD
+	stop
+	$CMD
+    restart_services
 }
 
 start_services() {
-    # Start PPPoE server, nginx, php-fpm
-    echo "Starting PPPoE server..."
-    kill_services
-    reset_interface
-    /etc/init.d/S50nginx start
-    /etc/init.d/S49php-fpm start
-    pppoe-server -I eth0 -T 60 -N 1 -C isp -S isp -L 10.1.1.1 -R 10.1.1.2 &
+	# Start PPPoE server, nginx, php-fpm
+	printf "Starting PPPoE server... "
+	[ $? = 0 ] && echo "OK" || echo "FAIL"
+	pppoe-server -I eth0 -T 60 -N 1 -C isp -S isp -L 10.1.1.1 -R 10.1.1.2 &
+	/etc/init.d/S50nginx start
+	/etc/init.d/S49php-fpm start
+	printf "Starting Web monitor... "
+	$WEB_MONITOR >> $LOG_FILE &
+	[ $? = 0 ] && echo "OK" || echo "FAIL"
 }
 
-# Default value for the force flag
-PPPWN_ONLY="false"
+restart_services() {
+	stop
+	start_services
+}
 
-# Parse command-line arguments
-while [ "$#" -gt 0 ]; do
-    case "$1" in
-        --pppwn-only) PPPWN_ONLY="true" ;;
-        stop)
-            killall -9 web_monitor.sh > /dev/null 2>&1;
-            kill_services
-            reset_interface
-            exit 0;
-            ;;
-        *) echo "Unknown parameter: $1" ;;
-    esac
-    shift
-done
+start() {
+	echo "Starting PPPwn service:"
+	if [ "$AUTO_START" = "true" ]; then
+		echo "Auto Start is enabled, Starting PPPwn..."
+		(execute_pppwn >> $LOG_FILE) > /dev/null 2>&1 &
+	else
+		echo "Auto Start is disabled, Skipping PPPwn..."
+		restart_services
+	fi
+	[ $? = 0 ] && echo "OK" || echo "FAIL"
+}
+
+stop() {
+	printf "Shutting down web monitor server: "
+	WEB_MONITOR_PID=`pidof $(basename $WEB_MONITOR)`
+	[ "$WEB_MONITOR_PID" != "" ] && (kill -9 $WEB_MONITOR_PID && echo "OK" || echo "FAIL") || echo "NOT RUNNING"
+
+	kill_services
+	reset_interface
+}
+
+restart() {
+	stop
+	start
+}
 
 read_config
 
-#PPPwn Execution
-if [ "$AUTO_START" = "true" ]; then
-    execute_pppwn >> /var/log/pppwn.log
-elif [ "$PPPWN_ONLY" = "true" ]; then
-    execute_pppwn  # no double log when comming from web_monitor
-else
-    echo "Auto Start is disabled, Skipping PPPwn..."
-fi
+case "$1" in
+start)
+	start
+	;;
+stop)
+	stop
+	;;
+restart|reload)
+	restart
+	;;
+restart_services)
+	restart_services
+	;;
+pppwn)
+	execute_pppwn
+	;;
+*)
+	echo "Usage: $0 {start|stop|restart|reload|restart_services|pppwn}"
+	exit 1
+	;;
+esac
 
-if [ "$PPPWN_ONLY" != "true" ]; then
-    start_services
+exit $?
 
-    # Start monitoring in the background
-    /etc/pppwn/web_monitor.sh >> /var/log/pppwn.log &
-fi
+read_config
+echo $CMD
