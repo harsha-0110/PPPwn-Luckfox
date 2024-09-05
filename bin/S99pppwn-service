@@ -36,14 +36,18 @@ read_config() {
 	fi
 }
 
-# Reset the interface eth0
-reset_interface() {
-	printf  "Resetting interface eth0... "
-	ip link set eth0 down
-	sleep 1
-	ip link set eth0 up
-	sleep 1
-	[ $? = 0 ] && echo "OK" || echo "FAIL"
+ifdown() {
+    printf "Shutting down interface eth0... "
+    ip link set eth0 down
+    [ $? = 0 ] && echo "OK" || echo "FAIL"
+}
+
+ifup() {
+    ip link show eth0 | grep -q "UP"
+    [ $? = 0 ] && return
+    printf "Bringing up interface eth0... "
+    ip link set eth0 up
+    [ $? = 0 ] && echo "OK" || echo "FAIL"
 }
 
 kill_services() {
@@ -60,9 +64,11 @@ execute_pppwn() {
     # This improves the chances of the exploit working. In my case, it went from unstable
     # (between 1 to 10 attempts) to 100% success rate at first shot when coupled with
     # CORRUPT_NUM=10 for a stubborn 9.60.
+    ifup
     start_pppoe
     wait_for_pppoe
     stop
+    ifup
 	$CMD
 	restart_services
 }
@@ -75,7 +81,7 @@ start_pppoe() {
 
 wait_for_pppoe() {
     IP="10.1.1.2"
-    MAX_ATTEMPTS=10  # Maximum number of iterations
+    MAX_ATTEMPTS=20  # Maximum number of iterations
 
     printf "Waiting for $IP to be reachable"
     attempts=0
@@ -99,6 +105,7 @@ wait_for_pppoe() {
 
 start_services() {
 	# Start PPPoE server, nginx, php-fpm
+    ifup
 	start_pppoe
 	/etc/init.d/S50nginx start
 	/etc/init.d/S49php-fpm start
@@ -130,7 +137,7 @@ stop() {
 	[ "$WEB_MONITOR_PID" != "" ] && (kill -9 $WEB_MONITOR_PID && echo "OK" || echo "FAIL") || echo "NOT RUNNING"
 
 	kill_services
-	reset_interface
+	ifdown
 }
 
 restart() {
@@ -156,6 +163,10 @@ restart_services)
 pppwn)
 	execute_pppwn
 	;;
+shutdown)
+    stop
+    halt &
+    ;;
 *)
 	echo "Usage: $0 {start|stop|restart|reload|restart_services|pppwn}"
 	exit 1

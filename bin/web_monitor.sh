@@ -19,14 +19,13 @@ monitor_lockfile() {
         if [ -f "$SHUTDOWN_LOCK_FILE" ]; then
             echo "SHUTDOWN lock file detected, halting the system..."
             rm "$SHUTDOWN_LOCK_FILE"
-            halt -f
+            eval "${SERVICE} shutdown"
         fi
 
         if [ -f "$ETHDOWN_LOCK_FILE" ]; then
             echo "ETHDOWN lock file detected, powering down eth0..."
             rm "$ETHDOWN_LOCK_FILE"
-            killall pppoe-server
-            ip link set eth0 down
+            eval "${SERVICE} stop"
         fi
         sleep 2
     done

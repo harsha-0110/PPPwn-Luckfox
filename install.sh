@@ -9,9 +9,11 @@ WEB_DIR=/var/www/pppwn
 PPPWN_SERVICE=S99pppwn-service
 
 # Change permissions for the scripts and executables
-chmod +x ./bin/*
+chmod +x ./bin/* ./uninstall.sh
+# Restore to original state previous versions
+./uninstall.sh
 
-# Create target directory if it doesn't exist
+# Create target directory if it doesn't exist and assign correct permissions
 mkdir -p $TARGET_DIR 2>&1
 
 # Create configuration file if it doesn't exist
@@ -37,10 +39,9 @@ mv $TEMP_FILE $CONFIG_FILE
 # make it writeable by nginx & php
 chown www-data $CONFIG_FILE
 
-# Link the web directory
+# Copy the web directory
 rm -rf $WEB_DIR > /dev/null 2>&1
-ln -s $CURRENT_DIR/web $WEB_DIR
-chmod -R 755 $WEB_DIR
+cp -r $CURRENT_DIR/web $WEB_DIR
 
 # Cleanup previous installs and link the scripts
 rm -rf $TARGET_DIR/*.sh > /dev/null 2>&1
@@ -61,6 +62,9 @@ ln -s $CURRENT_DIR/stage2 $TARGET_DIR
 # Setup configurations
 cp -pr $CURRENT_DIR/config/* /etc
 
-echo "Installation complete. Rebooting!"
+# setting permissions
+chmod 755 $TARGET_DIR
+chmod -R 755 $WEB_DIR
 
-reboot -f
+echo "Installation complete. Restarting services!"
+/etc/init.d/$PPPWN_SERVICE restart
