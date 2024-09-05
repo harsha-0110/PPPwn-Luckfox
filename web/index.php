@@ -25,6 +25,7 @@
         <a href="./all/index.html" class="button">All FW Payloads</a> <br>
         <a href="./linux/index.html" class="button">PS4 Linux Payloads</a>
         <a href="./linux-pro/index.html" class="button">PS4 Pro Linux Payloads</a>
+        <a href="./utils/logs.php" class="button">Logs</a> <br>
         <?php
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $baseLockDir = '/tmp/';
