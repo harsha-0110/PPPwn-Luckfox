@@ -57,6 +57,45 @@ An alternative method to [0x1iii1ii/PPPwn-Luckfox](https://github.com/0x1iii1ii/
 
 10. After Reboot you can visit `http://172.32.0.93/` using any browser to access the web-ui and modify the config.
 
+### Buildroot  Installation (MacOS) - ***ATTENTION - NAND ONLY!!!***
+1. Download the Buildroot(NAND image for your respective Luckfox Pico Model, SocToolKit from above and extract them.
+
+2. Grab your self a copy of [upgrade tool v2.25 for mac](https://wiki.luckfox.com/Luckfox-Pico/Linux-MacOS-Burn-Image/#burning-in-macos-environment) and [android platform tools](https://developer.android.com/tools/releases/platform-tools).
+
+3. Plug your luckfox into usb while holding the boot button and on your mac's terminal, check that your board is listed:
+    ```
+    sudo /path/to/upgrade_tool ld
+    ```
+
+4. To upgrade your firmware, we just need the update.img from the custom buildroot:
+    ```
+    sudo /path/to/upgrade_tool uf /path/to/update.img
+    ```
+
+5. We can check when the device finished rebooting by checking for presence in adb:
+    ```
+    adb wait-for-device && adb devices
+    ```
+
+6. Send the necessary files into the correct path:
+    ```
+    adb push /path/to/extracted-PPPwn-Luckfox /root/PPPwn-Luckfox
+    ```
+
+7. Grab a shell from the device and start installation:
+    ```
+    adb shell
+    ````
+
+8. In Luckfox shell (`[root@luckfox ]$`), run the following commands:
+
+
+    ```
+    cd /root/PPPwn-Luckfox/
+    chmod +x install.sh
+    ./install.sh
+    ```
+
 ### Ubuntu SD Installation
 1. Download the Ubuntu image for your respective Luckfox Pico Model, SocToolKit from above and extract them.
 
