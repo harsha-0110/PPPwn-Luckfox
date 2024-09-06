@@ -2,126 +2,69 @@
 
 # Define variables
 CURRENT_DIR=$(pwd)
-WEB_DIR="/var/www/pppwn"
-NGINX_CONF="/etc/nginx/nginx.conf"
-PPPWN_SERVICE="/etc/init.d/pppwn"
-CONFIG_DIR="/etc/pppwn"
-CONFIG_FILE="$CONFIG_DIR/config.json"
+DEFAULT_CONFIG_FILE=$CURRENT_DIR/config/pppwn/config.ini.default
+TARGET_DIR=/etc/pppwn
+CONFIG_FILE=$TARGET_DIR/config.ini
+WEB_DIR=/var/www/pppwn
+PPPWN_SERVICE=S99pppwn-service
 
-# Default configuration values
-DEFAULT_CONFIG=$(cat <<EOF
+# Change permissions for the scripts and executables
+chmod +x ./bin/* ./uninstall.sh
+# Restore to original state previous versions
+./uninstall.sh
+
+# Create target directory if it doesn't exist and assign correct permissions
+mkdir -p $TARGET_DIR 2>&1
+
+# Create configuration file if it doesn't exist
+touch $CONFIG_FILE
+
+TEMP_FILE=$(mktemp)
+# Combine defaults with the target config, giving priority to target values
 {
-    "PPPWN": "pppwn2",
-    "FW_VERSION": "1100",
-    "HEN_TYPE": "goldhen",
-    "TIMEOUT": "5",
-    "WAIT_AFTER_PIN": "2",
-    "GROOM_DELAY": "4",
-    "BUFFER_SIZE": "0",
-    "AUTO_RETRY": true,
-    "NO_WAIT_PADI": true,
-    "REAL_SLEEP": false,
-    "AUTO_START": false,
-    "SPRAY_NUM": "4096",
-    "PIN_NUM": "4096",
-    "CORRUPT_NUM": "1",
-    "OLD_IPv6": false,
-    "install_dir": "$CURRENT_DIR"
-}
-EOF
-)
+    # Read the target config file (CONFIG_FILE) first to ensure its values are prioritized
+    while IFS='=' read -r key value; do
+        [[ -n "$key" && -n "$value" ]] && echo "$key=$value"
+    done < $CONFIG_FILE
 
-# Function to check and add missing keys
-update_config() {
-    for key in $(echo "$DEFAULT_CONFIG" | jq -r 'keys[]'); do
-        if ! jq -e ".${key}" "$CONFIG_FILE" > /dev/null; then
-            value=$(echo "$DEFAULT_CONFIG" | jq ".${key}")
-            jq ".${key} = ${value}" "$CONFIG_FILE" > "$CONFIG_FILE.tmp" && mv "$CONFIG_FILE.tmp" "$CONFIG_FILE"
-        fi
-    done
-}
+    # Read the defaults config file (DEFAULT_CONFIG_FILE) and include only missing entries
+    while IFS='=' read -r key value; do
+        [[ -n "$key" && -n "$value" ]] && ! grep -q "^$key=" $CONFIG_FILE && echo "$key=$value"
+    done < $DEFAULT_CONFIG_FILE
+} > $TEMP_FILE
 
-# Change permissions of the following files
-chmod +x ./pppwn1
-chmod +x ./pppwn2
-chmod +x ./pppwn3
-chmod +x ./run.sh
-chmod +x ./web-run.sh
+# Replace the target config file with the merged result
+mv $TEMP_FILE $CONFIG_FILE
 
-# Create configuration directory if it doesn't exist
-if [ ! -d "$CONFIG_DIR" ]; then
-    mkdir -p $CONFIG_DIR
-fi
+# make it writeable by nginx & php
+chown www-data $CONFIG_FILE
 
-# Create or update the config.json file
-if [ ! -f "$CONFIG_FILE" ]; then
-    echo "$DEFAULT_CONFIG" | jq '.' > "$CONFIG_FILE"
-    chmod 777 $CONFIG_FILE
-else
-    update_config
-    chmod 777 $CONFIG_FILE
-fi
+# Copy the web directory
+rm -rf $WEB_DIR > /dev/null 2>&1
+cp -r $CURRENT_DIR/web $WEB_DIR
 
-# Remove the web directory if it already exists
-if [ -d "$WEB_DIR" ]; then
-    rm -rf $WEB_DIR
-fi
+# Cleanup previous installs and link the scripts
+rm -rf $TARGET_DIR/*.sh > /dev/null 2>&1
+for script in bin/*; do
+    rm -rf $TARGET_DIR/$(basename $script) > /dev/null 2>&1
+    ln -s $CURRENT_DIR/$script $TARGET_DIR
+done
 
-# Set up the web directory
-mkdir -p $WEB_DIR
-cp -r $CURRENT_DIR/web/* $WEB_DIR/
+# Link the service
+rm -rf /etc/init.d/$PPPWN_SERVICE > /dev/null 2>&1
+ln -s $TARGET_DIR/$PPPWN_SERVICE /etc/init.d/
+
+# Link the stages
+rm -rf $TARGET_DIR/stage* > /dev/null 2>&1
+ln -s $CURRENT_DIR/stage1 $TARGET_DIR
+ln -s $CURRENT_DIR/stage2 $TARGET_DIR
+
+# Setup configurations
+cp -pr $CURRENT_DIR/config/* /etc
+
+# setting permissions
+chmod 755 $TARGET_DIR
 chmod -R 755 $WEB_DIR
 
-# Set up Nginx configuration
-cat <<EOL > /etc/nginx/nginx.conf
-worker_processes  1;
-
-events {
-    worker_connections  1024;
-}
-
-http {
-    include       mime.types;
-    default_type  application/octet-stream;
-    sendfile        on;
-    keepalive_timeout  65;
-    server {
-        listen       80;
-        server_name  localhost;
-    
-        location / {
-            root   /var/www/pppwn;
-            index  index.php index.html index.htm;
-        }
-        
-        error_page   500 502 503 504  /50x.html;
-        location = /50x.html {
-            root   /var/www/pppwn;
-        }
-    
-        location ~ \.php$ {
-            root           /var/www/pppwn;
-            fastcgi_pass   unix:/var/run/php-fpm.sock;
-            fastcgi_index  index.php;
-            fastcgi_param  SCRIPT_FILENAME  \$document_root\$fastcgi_script_name;
-            include        fastcgi_params;
-        }
-    
-        location ~ /\.ht {
-            deny  all;
-        }
-    }
-}
-EOL
-
-# Create PPPwn service
-cp ./run.sh /etc/init.d/S99pppwn-service
-chmod +x /etc/init.d/S99pppwn-service
-
-# Set up pppoe configuration
-cp $CURRENT_DIR/pppoe/pppoe-server-options /etc/ppp/
-cp $CURRENT_DIR/pppoe/pap-secrets /etc/ppp/
-
-echo "Installation complete."
-
-reboot
+echo "Installation complete. Restarting services!"
+/etc/init.d/$PPPWN_SERVICE restart

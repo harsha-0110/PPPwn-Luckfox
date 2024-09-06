@@ -1,0 +1,179 @@
+#!/bin/sh
+
+CONFIG_DIR="/etc/pppwn"
+WEB_MONITOR=$CONFIG_DIR/web_monitor.sh
+LOG_FILE="/var/log/pppwn.log"
+
+read_config() {
+	# Define the path to the configuration file
+	CONFIG_FILE="$CONFIG_DIR/config.ini"
+
+	# Source the INI file
+	source "$CONFIG_FILE"
+
+	# Define the paths to the stage1 and stage2 payloads based on FW_VERSION
+	STAGE1_PAYLOAD="$CONFIG_DIR/stage1/${FW_VERSION}/stage1.bin"
+	STAGE2_PAYLOAD="$CONFIG_DIR/stage2/${HEN_TYPE}/${FW_VERSION}/stage2.bin"
+
+	# Run pppwn with the configuration values
+	CMD="$CONFIG_DIR/$PPPWN --interface eth0 --fw $FW_VERSION --stage1 $STAGE1_PAYLOAD --stage2 $STAGE2_PAYLOAD"
+
+	# Append optional parameters
+	[ "$TIMEOUT" != "" ] && CMD="$CMD --timeout $TIMEOUT"
+	[ "$WAIT_AFTER_PIN" != "" ] && CMD="$CMD --wait-after-pin $WAIT_AFTER_PIN"
+	[ "$GROOM_DELAY" != "" ] && CMD="$CMD --groom-delay $GROOM_DELAY"
+	[ "$BUFFER_SIZE" != "" ] && CMD="$CMD --buffer-size $BUFFER_SIZE"
+	[ "$AUTO_RETRY" == "true" ] && CMD="$CMD --auto-retry"
+	[ "$NO_WAIT_PADI" == "true" ] && CMD="$CMD --no-wait-padi"
+	[ "$REAL_SLEEP" == "true" ] && CMD="$CMD --real-sleep"
+
+	# Append optional nn9dev parameters
+	if [ "$PPPWN" = "pppwn3" ]; then
+		[ "$SPRAY_NUM" != "" ] && CMD="$CMD --spray-num $SPRAY_NUM"
+		[ "$PIN_NUM" != "" ] && CMD="$CMD --pin-num $PIN_NUM"
+		[ "$CORRUPT_NUM" != "" ] && CMD="$CMD --corrupt-num $CORRUPT_NUM"
+		[ "$OLD_IPv6" == "true" ] && CMD="$CMD --use-old-ipv6"
+	fi
+}
+
+ifdown() {
+    printf "Shutting down interface eth0... "
+    ip link set eth0 down
+    [ $? = 0 ] && echo "OK" || echo "FAIL"
+}
+
+ifup() {
+    ip link show eth0 | grep -q "UP"
+    [ $? = 0 ] && return
+    printf "Bringing up interface eth0... "
+    ip link set eth0 up
+    [ $? = 0 ] && echo "OK" || echo "FAIL"
+}
+
+kill_services() {
+	#Stop pppoe server, nginx, php-fpm and any running pppwn
+	printf "Stopping services... "
+	SERVICE_PIDS=`pidof pppoe pppoe-server php-fpm nginx pppwn1 pppwn2 pppwn3`
+	[ "$SERVICE_PIDS" != "" ] && (kill -9 $SERVICE_PIDS && echo "OK" || echo "FAIL") || echo "NOT RUNNING"
+}
+
+execute_pppwn() {
+    # We don't know what's running so we stop everything
+	stop
+    # Start PPPoE server and wait for connection (max 10 attempts)
+    # This improves the chances of the exploit working. In my case, it went from unstable
+    # (between 1 to 10 attempts) to 100% success rate at first shot when coupled with
+    # CORRUPT_NUM=10 for a stubborn 9.60.
+    ifup
+    start_pppoe
+    wait_for_pppoe
+    stop
+    ifup
+	$CMD
+	restart_services
+}
+
+start_pppoe() {
+    printf "Starting PPPoE server... "
+	pppoe-server -I eth0 -T 60 -N 1 -C isp -S isp -L 10.1.1.1 -R 10.1.1.2 &
+	[ $? = 0 ] && echo "OK" || echo "FAIL"
+}
+
+wait_for_pppoe() {
+    IP="10.1.1.2"
+    MAX_ATTEMPTS=20  # Maximum number of iterations
+
+    printf "Waiting for $IP to be reachable"
+    attempts=0
+    while [ $attempts -lt $MAX_ATTEMPTS ]; do
+        printf "."
+        sleep 1
+
+        if ping -c 1 -W 1 $IP >/dev/null 2>&1; then
+            echo " Reachable!"
+            break
+        fi
+
+        attempts=$((attempts + 1))
+
+        if [ $attempts -ge $MAX_ATTEMPTS ]; then
+            echo " Max attempts reached. $IP is still unreachable."
+            break
+        fi
+    done
+}
+
+start_services() {
+	# Start PPPoE server, nginx, php-fpm
+    ifup
+	start_pppoe
+	/etc/init.d/S50nginx start
+	/etc/init.d/S49php-fpm start
+	printf "Starting Web monitor... "
+	$WEB_MONITOR >> $LOG_FILE &
+	[ $? = 0 ] && echo "OK" || echo "FAIL"
+}
+
+restart_services() {
+	stop
+	start_services
+}
+
+start() {
+	echo "Starting PPPwn service:"
+	if [ "$AUTO_START" = "true" ]; then
+		echo "Auto Start is enabled, Starting PPPwn..."
+		(execute_pppwn >> $LOG_FILE) > /dev/null 2>&1 &
+	else
+		echo "Auto Start is disabled, Skipping PPPwn..."
+		restart_services
+	fi
+	[ $? = 0 ] && echo "OK" || echo "FAIL"
+}
+
+stop() {
+	printf "Shutting down web monitor server: "
+	WEB_MONITOR_PID=`pidof $(basename $WEB_MONITOR)`
+	[ "$WEB_MONITOR_PID" != "" ] && (kill -9 $WEB_MONITOR_PID && echo "OK" || echo "FAIL") || echo "NOT RUNNING"
+
+	kill_services
+	ifdown
+}
+
+restart() {
+	stop
+	start
+}
+
+read_config
+
+case "$1" in
+start)
+	start
+	;;
+stop)
+	stop
+	;;
+restart|reload)
+	restart
+	;;
+restart_services)
+	restart_services
+	;;
+pppwn)
+	execute_pppwn
+	;;
+shutdown)
+    stop
+    halt &
+    ;;
+*)
+	echo "Usage: $0 {start|stop|restart|reload|restart_services|pppwn}"
+	exit 1
+	;;
+esac
+
+exit $?
+
+read_config
+echo $CMD
