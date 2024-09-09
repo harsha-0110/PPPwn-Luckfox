@@ -20,8 +20,8 @@ An alternative method to [0x1iii1ii/PPPwn-Luckfox](https://github.com/0x1iii1ii/
    ### Custom Buildroot/Ubuntu Image for PPPwn-Luckfox
    Luckfox Model | Buildroot NAND Image | Buildroot SD Image | Ubuntu Image
    ------------- | ------------- | ------------- | -------------
-   Luckfox Pico Pro/Max | [download](https://github.com/harsha-0110/PPPwn-Luckfox/releases/download/v1.1/Buildroot-NAND-Pro-Max.rar) | [download](https://github.com/harsha-0110/PPPwn-Luckfox/releases/download/v1.1/Buildroot-SD-Pro-Max.rar) | [download](https://github.com/harsha-0110/PPPwn-Luckfox/releases/download/v1.0/Luckfox.pico.pro-max.img.rar)
-   Luckfox Pico Plus | [download](https://github.com/harsha-0110/PPPwn-Luckfox/releases/download/v1.1/Buildroot-NAND-Plus.rar) | [download](https://github.com/harsha-0110/PPPwn-Luckfox/releases/download/v1.1/Buildroot-SD-Plus.rar) | [download](https://github.com/harsha-0110/PPPwn-Luckfox/releases/download/v1.0/Luckfox.pico.plus.img.rar)
+   Luckfox Pico Pro/Max | [download](https://github.com/harsha-0110/PPPwn-Luckfox/releases/download/v1.1.5/Buildroot_NAND_Pro_Max.rar) | [download](https://github.com/harsha-0110/PPPwn-Luckfox/releases/download/v1.1.5/Buildroot-SD-Pro-Max.rar) | [download](https://github.com/harsha-0110/PPPwn-Luckfox/releases/download/v1.0/Luckfox.pico.pro-max.img.rar)
+   Luckfox Pico Plus | [download](https://github.com/harsha-0110/PPPwn-Luckfox/releases/download/v1.1.5/Buildroot_NAND_Plus.rar) | [download](https://github.com/harsha-0110/PPPwn-Luckfox/releases/download/v1.1.5/Buildroot_SD_Plus.rar) | [download](https://github.com/harsha-0110/PPPwn-Luckfox/releases/download/v1.0/Luckfox.pico.plus.img.rar)
 
    ### SocToolKit for flashing image into SD card
    - SocToolKit [download](https://files.luckfox.com/wiki/Luckfox-Pico/Software/SocToolKit.zip)
@@ -181,6 +181,7 @@ Special Thanks to
 - [0x1iii1ii](https://github.com/0x1iii1ii) for the inspiration for PPPwn-Luckfox.
 - [keschort](https://github.com/keschort) for the kernel config for Luckfox Pico.
 - [nn9dev](https://github.com/nn9dev) for the updated PPPwn_cpp with additional arguments.
+- [rdmrocha](https://github.com/rdmrocha) for his contribution.
 - And to all the Dev's in PS4 Scene.
 
 ## License
