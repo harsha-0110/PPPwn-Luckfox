@@ -62,6 +62,7 @@ execute_pppwn() {
     ifup
     if [ "$GOLDHEN_DETECT" = "true" -o "$PPPOE_WAIT" = "true" ]; then
 		# Wait for PPPoE if needed
+		start_pppoe
 		wait_for_pppoe
 		if [ "$GOLDHEN_DETECT" = "true" ]; then
 			# Check if GoldHen is running
@@ -99,7 +100,7 @@ start_pppoe() {
 
 wait_for_pppoe() {
     IP="10.1.1.2"
-    MAX_ATTEMPTS=20  # Maximum number of iterations
+    MAX_ATTEMPTS=30  # Maximum number of iterations
 
     printf "Waiting for $IP to be reachable"
     attempts=0
