@@ -58,18 +58,37 @@ kill_services() {
 }
 
 execute_pppwn() {
-    # We don't know what's running so we stop everything
 	stop
-    # Start PPPoE server and wait for connection (max 10 attempts)
-    # This improves the chances of the exploit working. In my case, it went from unstable
-    # (between 1 to 10 attempts) to 100% success rate at first shot when coupled with
-    # CORRUPT_NUM=10 for a stubborn 9.60.
     ifup
-    start_pppoe
-    wait_for_pppoe
-    stop
-    ifup
-	$CMD
+    if [ "$GOLDHEN_DETECT" = "true" -o "$PPPOE_WAIT" = "true" ]; then
+		# Wait for PPPoE if needed
+		start_pppoe
+		wait_for_pppoe
+		if [ "$GOLDHEN_DETECT" = "true" ]; then
+			# Check if GoldHen is running
+			check_status
+			if [ $? -eq 0 ]; then
+				printf "GoldHen is running, Skipping PPPwn...\n"
+			else
+				printf "GoldHen is not running, Starting PPPwn...\n"
+				stop
+				ifup
+				$CMD
+			fi
+		else
+			# If GOLDHEN_DETECT is not true, proceed with PPPwn
+			printf "Executing PPPwn...\n"
+			stop
+			ifup
+			$CMD
+		fi
+	else
+		# If neither GOLDHEN_DETECT nor PPPOE_WAIT is true, execute PPPwn directly
+		printf "Executing PPPwn...\n"
+		stop
+		ifup
+		$CMD
+	fi
 	restart_services
 }
 
@@ -81,7 +100,7 @@ start_pppoe() {
 
 wait_for_pppoe() {
     IP="10.1.1.2"
-    MAX_ATTEMPTS=20  # Maximum number of iterations
+    MAX_ATTEMPTS=30  # Maximum number of iterations
 
     printf "Waiting for $IP to be reachable"
     attempts=0
@@ -101,6 +120,16 @@ wait_for_pppoe() {
             break
         fi
     done
+}
+
+check_status() {
+    STATUS=$(nmap -p 3232 10.1.1.2 | grep '3232/tcp' | awk '{print $2}')
+    
+    if [ "$STATUS" = "open" ]; then
+        return 0  # Port is open (true)
+    else
+        return 1  # Port is closed or unreachable (false)
+    fi
 }
 
 start_services() {
@@ -174,6 +203,3 @@ shutdown)
 esac
 
 exit $?
-
-read_config
-echo $CMD

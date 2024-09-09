@@ -28,26 +28,6 @@
             historyBlocker: "historyblocker.bin.bz2",
             rifRenamer: "rifrenamer.bin.bz2",
             orbis: "Orbis-Toolbox-900.bin.bz2",
-            gtaLamance: "Lamance9.bin.bz2",
-            expul1: "LushModz-1.0-9.00.bin.bz2",
-            expul2: "LushModz-4.0-9.00.bin.bz2",
-            gtaBQ1: "BeefQueefMod.bin.bz2",
-            gtaBQ2: "BeefQueefMod134.bin.bz2",
-            gtaBQ3: "BeefQueefMod138.bin.bz2",
-            gtalts: "gtavLTS127.bin.bz2",
-            gtamb: "gtavmb127.bin.bz2",
-            gtava0: "gtava0.bin.bz2",
-            gtava1: "gtava1.bin.bz2",
-            gtava2: "gtava2.bin.bz2",
-            gtava3: "gtava3.bin.bz2",
-            rdr21: "Oysters1.00.bin.bz2",
-            rdr22: "Oysters1.13.bin.bz2",
-            rdr23: "Oysters1.19.bin.bz2",
-            rdr24: "Oysters1.24.bin.bz2",
-            rdr25: "Oysters1.29.bin.bz2",
-            wilde32: "WildeModz-1.32.bin.bz2",
-            wilde33: "WildeModz-1.33.bin.bz2",
-            wilde38: "WildeModz-1.38.bin.bz2",
             toDexEnable: "todex-enable.bin.bz2",
             toDexDisable: "todex-disable.bin.bz2",
             webRTE: "WebRTE.bin.bz2",
@@ -57,8 +37,6 @@
             all.style.display = "none";
             Dumpers.style.display = "none";
             Tools.style.display = "none";
-            gtav.style.display = "none";
-            rdr2.style.display = "none";
             menu.style.display = "block";
          }
 
@@ -66,8 +44,6 @@
             all.style.display = "block";
             Dumpers.style.display = "none";
             Tools.style.display = "none";
-            gtav.style.display = "none";
-            rdr2.style.display = "none";
          }
       </script>
       <script src="../utils/common.js"></script>
@@ -95,11 +71,9 @@
             <button class="button" onmouseover="progress.innerHTML='Removes the dummy files in the PS4 update folder'" onmouseout="progress.innerHTML='Status'" onclick="injectPayload(payloadFiles.enableUpdates)">Enable Updates</button>
             <button class="button" onmouseover="progress.innerHTML='Disable the auto opening of the last page used in the PS4 WebBrowser'" onmouseout="progress.innerHTML='Status'" onclick="injectPayload(payloadFiles.historyBlocker)">History Blocker</button>
             <button class="button" onmouseover="progress.innerHTML='Enable Browser'" onmouseout="progress.innerHTML='Status'" onclick="injectPayload(payloadFiles.enableBrowser)">Enable Browser</button>
-            <br />
-            <br />
             <button class="button" onmouseover="progress.innerHTML='All Dumper payloads'" onmouseout="progress.innerHTML='Status'" onclick="showMenu(Dumpers)">Dumper Group</button>
-            <button class="button" onmouseover="progress.innerHTML='All GTAV Mods'" onmouseout="progress.innerHTML='Status'" onclick="showMenu(gtav)">GTAV Mods</button>
-            <button class="button" onmouseover="progress.innerHTML='All RDR2 Mods'" onmouseout="progress.innerHTML='Status'" onclick="showMenu(rdr2)">RDR Mods</button>
+            <br />
+            <br />
             <button class="button" onmouseover="progress.innerHTML='PS4 Tools payloads'" onmouseout="progress.innerHTML='Status'" onclick="showMenu(Tools)">PS4 Tools</button>
             <br />
             <br />
@@ -126,42 +100,6 @@
             <br />
             <button class="button" onmouseover="progress.innerHTML='Set the temperature at the PS4 fan starts'" onmouseout="progress.innerHTML='Status'" onclick="injectPayload('fan' + tempC.value + '.bin.bz2')"> Fan Control </button>
             <select id="tempC"></select>
-            <br />
-            <br />
-            <button class="button" onmouseover="progress.innerHTML='Move back to main menu'" onmouseout="progress.innerHTML='Status'" onclick="backToMainMenu()">Back</button>
-         </div>
-         <div id="gtav" style="display: none;">
-            <button class="button" onmouseover="progress.innerHTML='GTAV ArabicGuy 1.00 for 900 L1+R1'" onmouseout="progress.innerHTML='Status'" onclick="injectPayload(payloadFiles.gtava0)">GTA ArabicGuy 1</button>
-            <button class="button" onmouseover="progress.innerHTML='GTAV ArabicGuy 1.27 for 900 ==> + []'" onmouseout="progress.innerHTML='Status'" onclick="injectPayload(payloadFiles.gtava1)">GTA ArabicGuy 2</button>
-            <button class="button" onmouseover="progress.innerHTML='GTAV ArabicGuy 1.32 for 900'" onmouseout="progress.innerHTML='Status'" onclick="injectPayload(payloadFiles.gtava2)">ArabicGuy 3</button>
-            <button class="button" onmouseover="progress.innerHTML='GTAV ArabicGuy 1.33 for 900'" onmouseout="progress.innerHTML='Status'" onclick="injectPayload(payloadFiles.gtava3)">ArabicGuy 4</button>
-            <br />
-            <br />
-            <button class="button" onmouseover="progress.innerHTML='GTAV Expulsion Mode Menu 1.35 by LushModz for 900'" onmouseout="progress.innerHTML='Status'" onclick="injectPayload(payloadFiles.expul1)">LushModz 1</button>
-            <button class="button" onmouseover="progress.innerHTML='GTAV Expulsion Mode Menu 1.38 by LushModz for 900'" onmouseout="progress.innerHTML='Status'" onclick="injectPayload(payloadFiles.expul2)">LushModz 2</button>
-            <button class="button" onmouseover="progress.innerHTML='GTAV Menu-Base 1.27 for 900 ==> + []'" onmouseout="progress.innerHTML='Status'" onclick="injectPayload(payloadFiles.gtamb)">MenuBase</button>
-            <button class="button" onmouseover="progress.innerHTML='GTAV LTS 1.27 for 900 ==> + []'" onmouseout="progress.innerHTML='Status'" onclick="injectPayload(payloadFiles.gtalts)">LTS</button>
-            <br />
-            <br />
-            <button class="button" onmouseover="progress.innerHTML='GTA BeefQueef Mod 1.33 by Lush Modz for GTA V 9.00 fw'" onmouseout="progress.innerHTML='Status'" onclick="injectPayload(payloadFiles.gtaBQ1)">BeefQueef 1</button>
-            <button class="button" onmouseover="progress.innerHTML='GTA BeefQueef Mod 1.34 by Lush Modz for GTA V 9.00 fw'" onmouseout="progress.innerHTML='Status'" onclick="injectPayload(payloadFiles.gtaBQ2)">BeefQueef 2</button>
-            <button class="button" onmouseover="progress.innerHTML='GTA BeefQueef Mod 1.38 by Lush Modz for GTA V 9.00 fw'" onmouseout="progress.innerHTML='Status'" onclick="injectPayload(payloadFiles.gtaBQ3)">BeefQueef 3</button>
-            <br />
-            <br />
-            <button class="button" onmouseover="progress.innerHTML='GTA V 1.38 Lamance 9.00 fw'" onmouseout="progress.innerHTML='Status'" onclick="injectPayload(payloadFiles.gtaLamance)">Lamance</button>
-            <button class="button" onmouseover="progress.innerHTML='Wilde Modz 1.32 by Lush Modz for GTA V 9.00 fw'" onmouseout="progress.innerHTML='Status'" onclick="injectPayload(payloadFiles.wilde32)">WildeModz 1</button>
-            <button class="button" onmouseover="progress.innerHTML='Wilde Modz 1.33 by Lush Modz for GTA V 9.00 fw'" onmouseout="progress.innerHTML='Status'" onclick="injectPayload(payloadFiles.wilde33)">WildeModz 2</button>
-            <button class="button" onmouseover="progress.innerHTML='Wilde Modz 1.38 by Lush Modz for GTA V 9.00 fw'" onmouseout="progress.innerHTML='Status'" onclick="injectPayload(payloadFiles.wilde38)">WildeModz 3</button>
-            <br />
-            <br />
-            <button class="button" onmouseover="progress.innerHTML='Move back to main menu'" onmouseout="progress.innerHTML='Status'" onclick="backToMainMenu()">Back</button>
-         </div>
-         <div id="rdr2" style="display: none;">
-            <button class="button" onmouseover="progress.innerHTML='Red dead redemption 2 mod  menu 1.00 V1.3.6 by RF0oDxM0Dz (R1 + Square) '" onmouseout="progress.innerHTML='Status'" onclick="injectPayload(payloadFiles.rdr21)">RDR2 1</button>
-            <button class="button" onmouseover="progress.innerHTML='Red dead redemption 2 mod  menu 1.13 V1.3.6 by RF0oDxM0Dz (R1 + Square) '" onmouseout="progress.innerHTML='Status'" onclick="injectPayload(payloadFiles.rdr22)">RDR2 2</button>
-            <button class="button" onmouseover="progress.innerHTML='Red dead redemption 2 mod  menu 1.19 V1.3.6 by RF0oDxM0Dz (R1 + Square) '" onmouseout="progress.innerHTML='Status'" onclick="injectPayload(payloadFiles.rdr23)">RDR2 3</button>
-            <button class="button" onmouseover="progress.innerHTML='Red dead redemption 2 mod  menu 1.24 V1.3.6 by RF0oDxM0Dz (R1 + Square) '" onmouseout="progress.innerHTML='Status'" onclick="injectPayload(payloadFiles.rdr24)">RDR2 4</button>
-            <button class="button" onmouseover="progress.innerHTML='Red dead redemption 2 mod  menu 1.29 V1.3.6 by RF0oDxM0Dz (R1 + Square) '" onmouseout="progress.innerHTML='Status'" onclick="injectPayload(payloadFiles.rdr25)">RDR2 5</button>
             <br />
             <br />
             <button class="button" onmouseover="progress.innerHTML='Move back to main menu'" onmouseout="progress.innerHTML='Status'" onclick="backToMainMenu()">Back</button>
