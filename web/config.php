@@ -68,6 +68,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $config['NO_WAIT_PADI'] = isset($_POST['NO_WAIT_PADI']);
         $config['REAL_SLEEP'] = isset($_POST['REAL_SLEEP']);
         $config['AUTO_START'] = isset($_POST['AUTO_START']);
+        $config['GOLDHEN_DETECT'] = isset($_POST['GOLDHEN_DETECT']);
+        $config['PPPOE_WAIT'] = isset($_POST['PPPOE_WAIT']);
         $config['OLD_IPv6'] = isset($_POST['OLD_IPv6']);
         // nn9dev PPPwn options
         $config['SPRAY_NUM'] = $_POST['SPRAY_NUM'];
@@ -148,6 +150,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="checkbox-group">
             <input type="checkbox" id="AUTO_START" name="AUTO_START" <?php if ($config['AUTO_START']) echo 'checked'; ?>>
             <label for="AUTO_START">Auto Run on Start-Up</label>
+        </div>
+
+        <div class="checkbox-group">
+            <input type="checkbox" id="GOLDHEN_DETECT" name="GOLDHEN_DETECT" <?php if ($config['GOLDHEN_DETECT']) echo 'checked'; ?>>
+            <label for="GOLDHEN_DETECT">Detect GoldHen</label>
+        </div>
+
+        <div class="checkbox-group">
+            <input type="checkbox" id="PPPOE_WAIT" name="PPPOE_WAIT" <?php if ($config['PPPOE_WAIT']) echo 'checked'; ?>>
+            <label for="PPPOE_WAIT">Wait for Successful PPPoE conection</label>
         </div>
 
         <p>nn9dev PPPwn options (Only works with nn9dev PPPwn):</p>
