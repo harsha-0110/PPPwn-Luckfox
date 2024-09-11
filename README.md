@@ -8,31 +8,33 @@ An alternative method to [0x1iii1ii/PPPwn-Luckfox](https://github.com/0x1iii1ii/
 - Supports both HEN and GoldHEN, can be configured via config page.
 - Supports auto run on boot can be turned on/off via config page (Note: It's off by default).
 - Supports Buildroot(NAND/SD) and Ubuntu(SD only).
+- Supports GoldHen detect feature, if the GoldHen is detected it skips running the PPPwn.
 
 ## Prerequisites
 - Luckfox Pico device
 - An SD card 8GB or above (optional)
 - Ethernet and Type-C cables
 - USB drive (for GoldHEN/Hen)
-- PC (for setup and flashing OS onto the SD card)
+- PC (for setup and flashing OS onto the SD card/NAND)
 
 ## Downloads
    ### Custom Buildroot/Ubuntu Image for PPPwn-Luckfox
    Luckfox Model | Buildroot NAND Image | Buildroot SD Image | Ubuntu Image
    ------------- | ------------- | ------------- | -------------
    Luckfox Pico Pro/Max | [download](https://github.com/harsha-0110/PPPwn-Luckfox/releases/download/v1.1.5/Buildroot_NAND_Pro_Max.rar) | [download](https://github.com/harsha-0110/PPPwn-Luckfox/releases/download/v1.1.5/Buildroot-SD-Pro-Max.rar) | [download](https://github.com/harsha-0110/PPPwn-Luckfox/releases/download/v1.0/Luckfox.pico.pro-max.img.rar)
-   Luckfox Pico Plus | [download](https://github.com/harsha-0110/PPPwn-Luckfox/releases/download/v1.1.5/Buildroot_NAND_Plus.rar) | [download](https://github.com/harsha-0110/PPPwn-Luckfox/releases/download/v1.1.5/Buildroot_SD_Plus.rar) | [download](https://github.com/harsha-0110/PPPwn-Luckfox/releases/download/v1.0/Luckfox.pico.plus.img.rar)
+   Luckfox Pico Plus/Mini | [download](https://github.com/harsha-0110/PPPwn-Luckfox/releases/download/v1.1.5/Buildroot_NAND_Plus.rar) | [download](https://github.com/harsha-0110/PPPwn-Luckfox/releases/download/v1.1.5/Buildroot_SD_Plus.rar) | [download](https://github.com/harsha-0110/PPPwn-Luckfox/releases/download/v1.0/Luckfox.pico.plus.img.rar)
 
    ### SocToolKit for flashing image into SD card
-   - SocToolKit [download](https://files.luckfox.com/wiki/Luckfox-Pico/Software/SocToolKit.zip)
+   - [SocToolKit](https://files.luckfox.com/wiki/Luckfox-Pico/Software/SocToolKit.zip)
+   - [DriverAssitant-RK](https://files.luckfox.com/wiki/Luckfox-Pico/Software/DriverAssitant_v5.12.zip)
 
    ### Mobaxterm
-   - Mobaxterm [download](https://download.mobatek.net/2422024061715901/MobaXterm_Portable_v24.2.zip)
+   - [Mobaxterm](https://download.mobatek.net/2422024061715901/MobaXterm_Portable_v24.2.zip)
 
 
 ## Installation
-### Buildroot(NAND/SD) Installation
-1. Download the Buildroot(NAND/SD) image for your respective Luckfox Pico Model, SocToolKit from above and extract them.
+### Buildroot(NAND/SD) Installation (Windows)
+1. Download the Buildroot(NAND/SD) image for your respective Luckfox Pico Model, SocToolKit from above and extract them. If you want to install on NAND, download and install DriverAssitant-RK.
 
 2. Follow this [SD tutorial](https://wiki.luckfox.com/Luckfox-Pico/Luckfox-Pico-SD-Card-burn-image) to flash the OS onto the SD card for the Luckfox. Or this [NAND tutorial](https://wiki.luckfox.com/Luckfox-Pico/Luckfox-Pico-Flash-burn-image) to flash the OS onto the NAND of the Luckfox.
 
@@ -58,7 +60,7 @@ An alternative method to [0x1iii1ii/PPPwn-Luckfox](https://github.com/0x1iii1ii/
 10. After Reboot you can visit `http://172.32.0.93/` using any browser to access the web-ui and modify the config.
 
 ### Buildroot  Installation (MacOS) - ***ATTENTION - NAND ONLY!!!***
-1. Download the Buildroot(NAND image for your respective Luckfox Pico Model, SocToolKit from above and extract them.
+1. Download the Buildroot NAND image for your respective Luckfox Pico Model, SocToolKit from above and extract them.
 
 2. Grab your self a copy of [upgrade tool v2.25 for mac](https://wiki.luckfox.com/Luckfox-Pico/Linux-MacOS-Burn-Image/#burning-in-macos-environment) and [android platform tools](https://developer.android.com/tools/releases/platform-tools).
 
@@ -88,15 +90,13 @@ An alternative method to [0x1iii1ii/PPPwn-Luckfox](https://github.com/0x1iii1ii/
     ````
 
 8. In Luckfox shell (`[root@luckfox ]$`), run the following commands:
-
-
     ```
     cd /root/PPPwn-Luckfox/
     chmod +x install.sh
     ./install.sh
     ```
 
-### Ubuntu SD Installation
+### Ubuntu SD Installation (Windows)
 1. Download the Ubuntu image for your respective Luckfox Pico Model, SocToolKit from above and extract them.
 
 2. Follow this [tutorial](https://wiki.luckfox.com/Luckfox-Pico/Luckfox-Pico-SD-Card-burn-image) to flash the OS onto the SD card for the Luckfox.
