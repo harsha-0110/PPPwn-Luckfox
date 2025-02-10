@@ -71,6 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $config['GOLDHEN_DETECT'] = isset($_POST['GOLDHEN_DETECT']);
         $config['PPPOE_WAIT'] = isset($_POST['PPPOE_WAIT']);
         $config['OLD_IPv6'] = isset($_POST['OLD_IPv6']);
+        $config['SHUTDOWN'] = isset($_POST['SHUTDOWN']);
         // nn9dev PPPwn options
         $config['SPRAY_NUM'] = $_POST['SPRAY_NUM'];
         $config['PIN_NUM'] = $_POST['PIN_NUM'];
@@ -160,6 +161,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="checkbox-group">
             <input type="checkbox" id="PPPOE_WAIT" name="PPPOE_WAIT" <?php if ($config['PPPOE_WAIT']) echo 'checked'; ?>>
             <label for="PPPOE_WAIT">Wait for Successful PPPoE conection</label>
+        </div>
+
+        <div class="checkbox-group">
+            <input type="checkbox" id="SHUTDOWN" name="SHUTDOWN" <?php if ($config['SHUTDOWN']) echo 'checked'; ?>>
+            <label for="SHUTDOWN">Shutdown Luckfox after successful JB</label>
         </div>
 
         <p>nn9dev PPPwn options (Only works with nn9dev PPPwn):</p>

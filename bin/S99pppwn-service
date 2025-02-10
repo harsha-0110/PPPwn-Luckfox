@@ -57,6 +57,14 @@ kill_services() {
 	[ "$SERVICE_PIDS" != "" ] && (kill -9 $SERVICE_PIDS && echo "OK" || echo "FAIL") || echo "NOT RUNNING"
 }
 
+shutdown_lf(){
+	# Check SHUTDOWN flag and shutdown if true
+	if [ "$SHUTDOWN" = "true" ]; then
+		printf "SHUTDOWN flag is set. Shutting down the device...\n"
+		halt &
+	fi
+}
+
 execute_pppwn() {
 	stop
     ifup
@@ -74,6 +82,7 @@ execute_pppwn() {
 				stop
 				ifup
 				$CMD
+				shutdown_lf
 			fi
 		else
 			# If GOLDHEN_DETECT is not true, proceed with PPPwn
@@ -81,6 +90,7 @@ execute_pppwn() {
 			stop
 			ifup
 			$CMD
+			shutdown_lf
 		fi
 	else
 		# If neither GOLDHEN_DETECT nor PPPOE_WAIT is true, execute PPPwn directly
@@ -88,6 +98,7 @@ execute_pppwn() {
 		stop
 		ifup
 		$CMD
+		shutdown_lf
 	fi
 	restart_services
 }
