@@ -1,7 +1,7 @@
 <?php
 // Define the file where the configuration will be stored
 $config_file = '/etc/pppwn/config.ini';
-$goldhen_versions = ["9.00", "9.60", "10.00", "10.01", "10.50", "10.70", "10.71", "11.00"];
+$goldhen_versions = ["9.00", "9.03","9.60", "10.00", "10.01", "10.50", "10.70", "10.71", "11.00"];
 $hen_versions = ["9.00", "9.03", "9.04", "9.50", "9.51", "9.60", "10.00", "10.01", "10.50", "10.70", "10.71", "11.00"];
 $pppwn_options = [
     "pppwn1" => "PPPwn with old IPv6",
